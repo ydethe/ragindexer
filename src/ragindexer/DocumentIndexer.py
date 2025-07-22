@@ -2,7 +2,7 @@ import os
 import time
 import threading
 from pathlib import Path
-from typing import Iterable, List, Tuple
+from typing import Dict, Iterable, List, Tuple
 
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler, FileSystemEvent
@@ -54,7 +54,7 @@ class DocumentIndexer:
 
     def extract_text(
         self, abspath: Path
-    ) -> Iterable[Tuple[int, List[ChunkType], List[EmbeddingType], dict]]:
+    ) -> Iterable[Tuple[int, List[ChunkType], List[EmbeddingType], Dict[str, str]]]:
         """Extract chunks, embeddings and metadata from file path
 
         Args:
@@ -138,7 +138,7 @@ class DocumentIndexer:
         disk_files = [p.resolve() for p in disk_files]
 
         # 2. For each file on disk, check timestamp vs. state DB
-        files_to_index = []
+        files_to_index: List[Path] = []
         for file_path in disk_files:
             stored = get_stored_timestamp(file_path)
             modified = os.path.getmtime(str(file_path))

@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Iterable, List, Tuple
+from typing import Any, Dict, Iterable, List, Tuple
 from solus import Singleton
 from sentence_transformers import SentenceTransformer
 
@@ -36,7 +36,7 @@ class DocumentFactory(Singleton):
 
     def processDocument(
         self, abspath: Path
-    ) -> Iterable[Tuple[int, List[ChunkType], List[EmbeddingType], dict]]:
+    ) -> Iterable[Tuple[int, List[ChunkType], List[EmbeddingType], Dict[str, Any]]]:
         ext = abspath.suffix
         cls = self.getBuild(ext)
         doc: ADocument = cls(abspath)

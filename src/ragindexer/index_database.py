@@ -1,7 +1,7 @@
 import os
 import sqlite3
 from pathlib import Path
-from typing import Optional
+from typing import List, Optional
 
 from . import logger
 from .config import config
@@ -109,7 +109,7 @@ def list_stored_files(absolute: bool = False) -> list[Path]:
     rows = c.fetchall()
     conn.close()
 
-    files_list = []
+    files_list: List[Path] = []
     for (stored_path,) in rows:
         relpath = Path(stored_path)
         if absolute:

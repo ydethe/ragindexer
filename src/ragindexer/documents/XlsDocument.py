@@ -1,4 +1,4 @@
-from typing import Iterable, Tuple
+from typing import Any, Dict, Iterable, Tuple
 
 import openpyxl
 
@@ -7,7 +7,7 @@ from .ADocument import ADocument
 
 
 class XlsDocument(ADocument):
-    def iterate_raw_text(self) -> Iterable[Tuple[int, str, dict]]:
+    def iterate_raw_text(self) -> Iterable[Tuple[int, str, Dict[str, Any]]]:
         try:
             wb = openpyxl.load_workbook(self.get_abs_path(), read_only=True, data_only=True)
         except Exception:

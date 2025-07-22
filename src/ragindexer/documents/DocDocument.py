@@ -1,4 +1,4 @@
-from typing import Iterable, Tuple
+from typing import Any, Dict, Iterable, Tuple
 
 import docx
 
@@ -7,7 +7,7 @@ from .ADocument import ADocument
 
 
 class DocDocument(ADocument):
-    def iterate_raw_text(self) -> Iterable[Tuple[str, dict]]:
+    def iterate_raw_text(self) -> Iterable[Tuple[int, str, Dict[str, Any]]]:
         try:
             doc = docx.Document(str(self.get_abs_path()))
         except Exception:

@@ -1,7 +1,7 @@
 import hashlib
 from pathlib import Path
 import time
-from typing import Optional, List, Sequence, Union
+from typing import Dict, Optional, List, Sequence, Union
 import uuid
 
 from qdrant_client.conversions import common_types as types
@@ -145,7 +145,7 @@ class QdrantIndexer:
         k_page: int,
         chunks: List[ChunkType],
         embeddings: List[EmbeddingType],
-        file_metadata: dict,
+        file_metadata: Dict[str, str],
     ):
         """
         Update or insert a new chunk into the collection.

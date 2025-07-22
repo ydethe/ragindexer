@@ -1,6 +1,6 @@
 from abc import abstractmethod, ABC
 from pathlib import Path
-from typing import List, Tuple, Iterable
+from typing import Dict, List, Tuple, Iterable
 
 from nltk.tokenize import sent_tokenize
 from sentence_transformers import SentenceTransformer
@@ -32,7 +32,7 @@ class ADocument(ABC):
         return self.__abspath
 
     @abstractmethod
-    def iterate_raw_text(self) -> Iterable[Tuple[int, str, dict]]:
+    def iterate_raw_text(self) -> Iterable[Tuple[int, str, Dict[str, str]]]:
         """
         Abstract method that should implement the concrete way to handle the file.
 
@@ -74,7 +74,7 @@ class ADocument(ABC):
 
     def process(
         self, embedding_model: SentenceTransformer
-    ) -> Iterable[Tuple[int, List[ChunkType], List[EmbeddingType], dict]]:
+    ) -> Iterable[Tuple[int, List[ChunkType], List[EmbeddingType], Dict[str, str]]]:
         for k_page, text, file_metadata in self.iterate_raw_text():
             file_metadata["abspath"] = self.get_abs_path()
 

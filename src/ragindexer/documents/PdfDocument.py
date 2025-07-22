@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Iterable, Tuple
+from typing import Any, Dict, Iterable, Tuple
 
 import pytesseract
 from pdf2image import convert_from_path
@@ -58,7 +58,7 @@ class PdfDocument(ADocument):
         else:
             self.using_ocr = False
 
-    def iterate_raw_text(self) -> Iterable[Tuple[str, dict]]:
+    def iterate_raw_text(self) -> Iterable[Tuple[int, str, Dict[str, Any]]]:
         path = self.get_abs_path()
         try:
             reader = PdfReader(path)

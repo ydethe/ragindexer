@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
+- Fixed typing info ([a5e35cc](https://github.com/ydethe/ragindexer/commit/a5e35cc360215a870d0ade2048277de00b78c51d) by Yann de The).
 - Fixed Action ([85cd5bb](https://github.com/ydethe/ragindexer/commit/85cd5bbb0c96c318d57cbac3fd021dec516d339b) by Yann de The).
 - Fixed Exception raised when no text read ([88c078f](https://github.com/ydethe/ragindexer/commit/88c078f4f708ef90ec31a8169858d13bef75bd77) by Yann de The).
 - Fixed empty chunks ([a72e49a](https://github.com/ydethe/ragindexer/commit/a72e49a4ea0873e01336aaf7bc2f98999fd3475c) by Yann de The).

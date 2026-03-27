@@ -1,4 +1,5 @@
 .root
+documents/
 migrations
 .gradio
 htmldoc

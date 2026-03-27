@@ -349,13 +349,13 @@ class VectorDatabaseService:
 
             while True:
                 try:
-                    points, _ = self.client.scroll(
+                    points, next_page_offset = self.client.scroll(
                         collection_name=self.collection_name,
                         limit=100,
                         offset=offset,
                     )
 
-                    if not points:
+                    if next_page_offset is None:
                         break
 
                     for point in points:

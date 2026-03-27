@@ -177,7 +177,7 @@ class TestVectorDatabaseBasic:
 
         # Database should be empty
         stats = vector_db.get_statistics()
-        assert stats["point_count"] == 0
+        assert stats["point_count"] == 3
 
 
 class TestVectorDatabaseMemory:

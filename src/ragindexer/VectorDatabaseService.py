@@ -346,25 +346,16 @@ class VectorDatabaseService:
             # Qdrant 1.17.1: scroll through points and delete those matching
             points_to_delete = []
             offset = 0
+            while offset is not None:
+                points, offset = self.client.scroll(
+                    collection_name=self.collection_name,
+                    limit=100,
+                    offset=offset,
+                )
 
-            while True:
-                try:
-                    points, next_page_offset = self.client.scroll(
-                        collection_name=self.collection_name,
-                        limit=100,
-                        offset=offset,
-                    )
-
-                    if next_page_offset is None:
-                        break
-
-                    for point in points:
-                        if point.payload.get("source_file") == source_file:
-                            points_to_delete.append(point.id)
-
-                    offset += len(points)
-                except Exception:
-                    break
+                for point in points:
+                    if point.payload.get("source_file") == source_file:
+                        points_to_delete.append(point.id)
 
             # Delete the identified points
             if points_to_delete:

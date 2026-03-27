@@ -1,0 +1,10 @@
+
+    Machine learning is a subset of artificial intelligence.
+    It enables systems to learn and improve from experience.
+
+    Deep learning uses neural networks with multiple layers.
+    It has revolutionized computer vision and natural language processing.
+
+    Embeddings are numerical representations of text.
+    They capture semantic meaning and enable similarity calculations.
+    

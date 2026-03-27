@@ -1,1 +1,0 @@
-- [src/ragindexer/DocumentIndexer.py#L190](src/ragindexer/DocumentIndexer.py#L190): Implement folder and file renaming

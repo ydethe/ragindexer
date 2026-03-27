@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
+- Added precommit hooks ([dbb6aee](https://github.com/ydethe/ragindexer/commit/dbb6aeef0eb081a7d842ccffdbbeb75fd8f3a2f9) by Yann de The).
 - Added QdrantIndexer.get_vector_by_id ([4ce4c35](https://github.com/ydethe/ragindexer/commit/4ce4c35f5fd8dc7251f4df146cc92aeecae74693) by Yann de The).
 - Added publication of qdrant snapshot on github pages ([8c637a3](https://github.com/ydethe/ragindexer/commit/8c637a3d757a238a35840a2a49619879a21e856c) by Yann de The).
 - Added link to doc pages ([080304e](https://github.com/ydethe/ragindexer/commit/080304ec4a90cbc50efd03be87d3ec716991a381) by Yann de The).

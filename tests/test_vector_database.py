@@ -12,14 +12,10 @@ Tests cover:
 """
 
 import pytest
-from pathlib import Path
-from datetime import datetime
 
 from ragindexer import (
     VectorDatabaseService,
-    VectorDatabaseResult,
     SearchResult,
-    StoredEmbedding,
 )
 from ragindexer import (
     EmbeddingService,
@@ -157,8 +153,8 @@ class TestVectorDatabaseBasic:
         """Test document deletion."""
         vector_db.add_embeddings(sample_embedded_chunks)
 
-        stats_before = vector_db.get_statistics()
-        count_before = stats_before["point_count"]
+        # stats_before = vector_db.get_statistics()
+        # count_before = stats_before["point_count"]
 
         result = vector_db.delete_document("test.txt")
 
@@ -177,7 +173,7 @@ class TestVectorDatabaseBasic:
 
         # Database should be empty
         stats = vector_db.get_statistics()
-        assert stats["point_count"] == 3
+        assert stats["point_count"] == 0
 
 
 class TestVectorDatabaseMemory:
@@ -327,11 +323,13 @@ class TestVectorDatabaseIntegration:
         # Create test document
         doc_path = tmp_path / "docs"
         doc_path.mkdir()
-        (doc_path / "test.txt").write_text("""Machine learning is a subset of AI.
+        (doc_path / "test.txt").write_text(
+            """Machine learning is a subset of AI.
 It enables systems to learn from data.
 
 Neural networks have multiple layers.
-They process information hierarchically.""")
+They process information hierarchically."""
+        )
 
         # Pipeline
         scanner = FileScanner(doc_path)

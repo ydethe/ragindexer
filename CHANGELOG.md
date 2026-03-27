@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
+- Added pytest profiling ([6c6c20f](https://github.com/ydethe/ragindexer/commit/6c6c20f2a71f927998b5cd89c82495a4ba244dd0) by Yann de The).
 - Added precommit hooks ([dbb6aee](https://github.com/ydethe/ragindexer/commit/dbb6aeef0eb081a7d842ccffdbbeb75fd8f3a2f9) by Yann de The).
 - Added QdrantIndexer.get_vector_by_id ([4ce4c35](https://github.com/ydethe/ragindexer/commit/4ce4c35f5fd8dc7251f4df146cc92aeecae74693) by Yann de The).
 - Added publication of qdrant snapshot on github pages ([8c637a3](https://github.com/ydethe/ragindexer/commit/8c637a3d757a238a35840a2a49619879a21e856c) by Yann de The).
@@ -33,6 +34,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
+- Fixed blocking loop ([66834b9](https://github.com/ydethe/ragindexer/commit/66834b9920834b1006a54f788a1f655f865d504b) by BLAUDIN DE THE Yann).
 - Fixed typing info ([2430705](https://github.com/ydethe/ragindexer/commit/24307055d255d1eb80b673a179eebf480e843b78) by Yann de The).
 - Fixed Action ([85cd5bb](https://github.com/ydethe/ragindexer/commit/85cd5bbb0c96c318d57cbac3fd021dec516d339b) by Yann de The).
 - Fixed Exception raised when no text read ([88c078f](https://github.com/ydethe/ragindexer/commit/88c078f4f708ef90ec31a8169858d13bef75bd77) by Yann de The).

@@ -50,7 +50,7 @@ from ragindexer.SyncManager import (
     FileSyncResult,
     SyncOperationResult,
 )
-from ragindexer.Settings import Settings, settings
+from ragindexer.Settings import Settings
 from ragindexer.Orchestrator import (
     SyncEventHandler,
     PipelineOrchestrator,

@@ -141,5 +141,3 @@ class Settings(BaseSettings):
         """Get the scan root directory as a Path object."""
         return Path(self.SCAN_ROOT)
 
-
-settings = Settings()

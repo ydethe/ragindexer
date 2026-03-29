@@ -16,7 +16,7 @@ class TestSettings:
 
     def test_settings_default_values(self):
         """Test that Settings has correct default values"""
-        settings = Settings()
+        settings = Settings(_env_file="sample.env")  # Use a non-existent env file to ensure defaults
 
         assert settings.LOGLEVEL == "info"
         assert settings.SCAN_ROOT == "./documents"

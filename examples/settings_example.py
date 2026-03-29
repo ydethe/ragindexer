@@ -6,8 +6,10 @@ This example demonstrates various ways to configure ragindexer using the
 Settings component and how to integrate it with other components.
 """
 
-from ragindexer import settings, Settings
+from ragindexer import Settings
 from pathlib import Path
+
+settings=Settings()
 
 print("=" * 70)
 print("Settings Component - Configuration Examples")

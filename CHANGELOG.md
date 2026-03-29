@@ -34,6 +34,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
+- Fixing tests ([8864d3b](https://github.com/ydethe/ragindexer/commit/8864d3b621bfbf32582b43bca1cbf8f52723f1c3) by Yann de The).
 - Fixed blocking loop ([66834b9](https://github.com/ydethe/ragindexer/commit/66834b9920834b1006a54f788a1f655f865d504b) by BLAUDIN DE THE Yann).
 - Fixed typing info ([2430705](https://github.com/ydethe/ragindexer/commit/24307055d255d1eb80b673a179eebf480e843b78) by Yann de The).
 - Fixed Action ([85cd5bb](https://github.com/ydethe/ragindexer/commit/85cd5bbb0c96c318d57cbac3fd021dec516d339b) by Yann de The).

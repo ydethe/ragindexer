@@ -16,7 +16,9 @@ class TestSettings:
 
     def test_settings_default_values(self):
         """Test that Settings has correct default values"""
-        settings = Settings(_env_file="sample.env")  # Use a non-existent env file to ensure defaults
+        settings = Settings(
+            _env_file="sample.env"
+        )  # Use a non-existent env file to ensure defaults
 
         assert settings.LOGLEVEL == "info"
         assert settings.SCAN_ROOT == "./documents"
@@ -168,3 +170,33 @@ class TestSettings:
         for url in urls:
             settings = Settings(QDRANT_URL=url, _env_file=None)
             assert settings.QDRANT_URL == url
+
+    def test_qdrant_api_key_default_none(self):
+        """Test that QDRANT_API_KEY defaults to None"""
+        settings = Settings(_env_file=None)
+        assert settings.QDRANT_API_KEY is None
+
+    def test_qdrant_api_key_can_be_set(self):
+        """Test that QDRANT_API_KEY can be set to a value"""
+        settings = Settings(QDRANT_API_KEY="my-secret-key", _env_file=None)
+        assert settings.QDRANT_API_KEY == "my-secret-key"
+
+    def test_qdrant_api_key_env_override(self, monkeypatch):
+        """Test that QDRANT_API_KEY can be set via environment variable"""
+        monkeypatch.setenv("QDRANT_API_KEY", "env-api-key")
+        settings = Settings(_env_file=None)
+        assert settings.QDRANT_API_KEY == "env-api-key"
+
+    def test_qdrant_api_key_from_env_file(self):
+        """Test that QDRANT_API_KEY can be loaded from .env file"""
+        import tempfile
+
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".env", delete=False) as f:
+            f.write("QDRANT_API_KEY=file-api-key\n")
+            env_file = f.name
+
+        try:
+            settings = Settings(_env_file=env_file)
+            assert settings.QDRANT_API_KEY == "file-api-key"
+        finally:
+            os.unlink(env_file)

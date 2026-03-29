@@ -107,6 +107,8 @@ class VectorDatabaseService:
         collection_name: str = "ragindexer_embeddings",
         vector_size: int = 384,
         persistence_path: Optional[Path] = None,
+        qdrant_url: Optional[str] = None,
+        api_key: Optional[str] = None,
         logger_instance: Optional[logging.Logger] = None,
     ):
         """
@@ -116,6 +118,7 @@ class VectorDatabaseService:
             collection_name: Name of the Qdrant collection
             vector_size: Dimension of embedding vectors (384 for MiniLM-L6-v2)
             persistence_path: Path for on-disk storage (None = in-memory)
+            api_key: API key for Qdrant authentication (optional, for secured instances)
             logger_instance: Logger to use (defaults to module logger)
 
         Note:
@@ -125,18 +128,28 @@ class VectorDatabaseService:
         self.collection_name = collection_name
         self.vector_size = vector_size
         self.persistence_path = persistence_path
+        self.api_key = api_key
+        self.qdrant_url = qdrant_url
         self.logger = logger_instance or logger
 
         # Initialize Qdrant client
-        if persistence_path is None:
+        if qdrant_url is not None:
+            # Remote Qdrant instance
+            self.logger.info(
+                f"Initializing Qdrant remote client at {qdrant_url}{' with API key' if api_key else ''}"
+            )
+            self.client = QdrantClient(url=qdrant_url, api_key=api_key)
+        elif persistence_path is not None:
+            # Persistent mode (file-based)
+            persistence_path.mkdir(parents=True, exist_ok=True)
+            self.logger.info(
+                f"Initializing Qdrant persistent client at {persistence_path}{' with API key' if api_key else ''}"
+            )
+            self.client = QdrantClient(path=str(persistence_path), api_key=api_key)
+        else:
             # In-memory mode
             self.logger.info("Initializing Qdrant in-memory client")
             self.client = QdrantClient(":memory:")
-        else:
-            # Persistent mode (file-based)
-            persistence_path.mkdir(parents=True, exist_ok=True)
-            self.logger.info(f"Initializing Qdrant persistent client at {persistence_path}")
-            self.client = QdrantClient(path=str(persistence_path))
 
         # Create collection if it doesn't exist
         self._ensure_collection_exists()

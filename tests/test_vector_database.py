@@ -451,6 +451,53 @@ class TestVectorDatabaseErrors:
         assert "collection_name" in stats
 
 
+class TestVectorDatabaseApiKey:
+    """Tests for QDRANT_API_KEY support."""
+
+    def test_api_key_default_none(self, tmp_path):
+        """Test that api_key defaults to None."""
+        vector_db = VectorDatabaseService(
+            vector_size=384,
+            persistence_path=tmp_path / "qdrant",
+        )
+        assert vector_db.api_key is None
+
+    def test_api_key_stored(self, tmp_path):
+        """Test that api_key is stored when provided."""
+        vector_db = VectorDatabaseService(
+            vector_size=384,
+            persistence_path=tmp_path / "qdrant",
+            api_key="my-secret-key",
+        )
+        assert vector_db.api_key == "my-secret-key"
+
+    def test_api_key_does_not_break_operations(self, tmp_path):
+        """Test that providing an api_key does not break normal operations."""
+        vector_db = VectorDatabaseService(
+            vector_size=384,
+            persistence_path=tmp_path / "qdrant",
+            api_key="test-key",
+        )
+
+        metadata = ChunkMetadata(
+            source_file="test.txt",
+            chunk_index=0,
+            total_chunks=1,
+            start_char=0,
+            end_char=10,
+        )
+        chunk = TextChunk(content="Test content", metadata=metadata)
+        embedded_chunk = EmbeddedChunk(
+            chunk=chunk,
+            embedding=[0.1] * 384,
+            embedding_dim=384,
+            embedding_model="test",
+        )
+
+        result = vector_db.add_embeddings([embedded_chunk])
+        assert result.success is True
+
+
 class TestVectorDatabaseMetadata:
     """Tests for metadata handling."""
 

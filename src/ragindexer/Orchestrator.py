@@ -124,9 +124,11 @@ class PipelineOrchestrator:
         self.sync_manager = SyncManager(
             scan_root=settings.get_scan_root(),
             persistence_path=settings.get_qdrant_persistence_path(),
+            qdrant_url=settings.QDRANT_URL,
             chunk_size=settings.CHUNK_SIZE,
             overlap_size=settings.OVERLAP_SIZE,
             embedding_model=settings.EMBEDDING_MODEL,
+            qdrant_api_key=settings.QDRANT_API_KEY,
             logger_instance=self.logger,
         )
 

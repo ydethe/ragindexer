@@ -1,6 +1,7 @@
 from pathlib import Path
 import logging
 import os
+from typing import Optional
 
 from rich.logging import RichHandler
 
@@ -57,8 +58,12 @@ class Settings(BaseSettings):
     )
 
     # Vector database configuration
-    QDRANT_URL: str = Field(
+    QDRANT_URL: Optional[str] = Field(
         default="http://localhost:6333", description="URL for Qdrant vector database"
+    )
+    QDRANT_API_KEY: Optional[str] = Field(
+        default=None,
+        description="API key for Qdrant authentication (optional, for secured instances)",
     )
     QDRANT_PERSISTENCE_PATH: str = Field(
         default="./data/qdrant",
@@ -140,4 +145,3 @@ class Settings(BaseSettings):
     def get_scan_root(self) -> Path:
         """Get the scan root directory as a Path object."""
         return Path(self.SCAN_ROOT)
-

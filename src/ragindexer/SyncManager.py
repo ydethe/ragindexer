@@ -8,13 +8,13 @@ Coordinates FileScanner, DocumentParser, ChunkingService, EmbeddingService, and 
 
 import logging
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, Optional
 from datetime import datetime
 from enum import Enum
 
 from pydantic import BaseModel, Field
 
-from ragindexer.FileScanner import FileScanner, ScanResult, FileChange, ChangeType
+from ragindexer.FileScanner import FileScanner, ScanResult, ChangeType
 from ragindexer.DocumentParser import DocumentParser
 from ragindexer.ChunkingService import ChunkingService
 from ragindexer.EmbeddingService import EmbeddingService
@@ -109,9 +109,11 @@ class SyncManager:
         self,
         scan_root: Path | str,
         persistence_path: Optional[Path] = None,
+        qdrant_url: Optional[str] = None,
         chunk_size: int = 512,
         overlap_size: int = 50,
         embedding_model: str = "all-MiniLM-L6-v2",
+        qdrant_api_key: Optional[str] = None,
         logger_instance: Optional[logging.Logger] = None,
     ):
         """
@@ -123,6 +125,7 @@ class SyncManager:
             chunk_size: Target chunk size in tokens (default 512)
             overlap_size: Overlap size between chunks in tokens (default 50)
             embedding_model: HuggingFace model ID for embeddings
+            qdrant_api_key: API key for Qdrant authentication (optional)
             logger_instance: Logger to use (defaults to module logger)
 
         Raises:
@@ -146,6 +149,8 @@ class SyncManager:
         self.vector_db = VectorDatabaseService(
             vector_size=self.embedding_service.embedding_dim,
             persistence_path=persistence_path,
+            qdrant_url=qdrant_url,
+            api_key=qdrant_api_key,
             logger_instance=self.logger,
         )
 

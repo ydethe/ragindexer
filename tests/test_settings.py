@@ -22,7 +22,7 @@ class TestSettings:
 
         assert settings.LOGLEVEL == "info"
         assert settings.SCAN_ROOT == "./documents"
-        assert settings.EMBEDDING_MODEL == "all-MiniLM-L6-v2"
+        assert settings.EMBEDDING_MODEL == "BAAI/bge-small-en-v1.5"
         assert settings.CHUNK_SIZE == 512
         assert settings.OVERLAP_SIZE == 50
         assert settings.QDRANT_URL == "http://localhost:6333"
@@ -134,8 +134,8 @@ class TestSettings:
     def test_embedding_model_choices(self):
         """Test that common embedding models can be configured"""
         models = [
-            "all-MiniLM-L6-v2",
-            "all-mpnet-base-v2",
+            "BAAI/bge-small-en-v1.5",
+            "BAAI/bge-base-en-v1.5",
             "sentence-transformers/all-MiniLM-L6-v2",
         ]
 

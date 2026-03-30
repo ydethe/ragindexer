@@ -112,7 +112,7 @@ class SyncManager:
         qdrant_url: Optional[str] = None,
         chunk_size: int = 512,
         overlap_size: int = 50,
-        embedding_model: str = "all-MiniLM-L6-v2",
+        embedding_model: str = "BAAI/bge-small-en-v1.5",
         qdrant_api_key: Optional[str] = None,
         logger_instance: Optional[logging.Logger] = None,
     ):
@@ -124,7 +124,7 @@ class SyncManager:
             persistence_path: Path for vector database persistence (None = in-memory)
             chunk_size: Target chunk size in tokens (default 512)
             overlap_size: Overlap size between chunks in tokens (default 50)
-            embedding_model: HuggingFace model ID for embeddings
+            embedding_model: fastembed model ID for embeddings
             qdrant_api_key: API key for Qdrant authentication (optional)
             logger_instance: Logger to use (defaults to module logger)
 

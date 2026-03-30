@@ -40,8 +40,8 @@ class Settings(BaseSettings):
 
     # Embedding model configuration
     EMBEDDING_MODEL: str = Field(
-        default="all-MiniLM-L6-v2",
-        description="Sentence Transformers model for embeddings (local, no GPU required)",
+        default="BAAI/bge-small-en-v1.5",
+        description="fastembed model for embeddings (ONNX-based, CPU-optimized, no GPU required)",
     )
 
     # Chunking configuration

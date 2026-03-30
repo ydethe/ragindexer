@@ -5,11 +5,11 @@ Example: Using the Settings component
 This example demonstrates various ways to configure ragindexer using the
 Settings component and how to integrate it with other components.
 """
+import os
 
 from ragindexer import Settings
-from pathlib import Path
 
-settings=Settings()
+settings = Settings()
 
 print("=" * 70)
 print("Settings Component - Configuration Examples")
@@ -38,7 +38,7 @@ persistence = settings.get_qdrant_persistence_path()
 if persistence:
     print(f"Persistence Path:        {persistence}")
 else:
-    print(f"Persistence:             In-memory mode")
+    print("Persistence:             In-memory mode")
 
 # Example 3: Create custom settings for testing
 print("\n3. CUSTOM SETTINGS (Testing)")
@@ -115,7 +115,6 @@ for scenario, config in configs.items():
 # Example 6: Environment variable override
 print("\n6. ENVIRONMENT VARIABLE OVERRIDE")
 print("-" * 70)
-import os
 
 # Show how to set environment variables
 print("To override settings via environment variables, use:")
@@ -130,17 +129,19 @@ print(f"Current CHUNK_SIZE: {os.getenv('CHUNK_SIZE', '(not set)')}")
 print("\n7. .ENV FILE CONFIGURATION")
 print("-" * 70)
 print("Create a .env file in your project root with:")
-print("""
+print(
+    """
 LOGLEVEL=info
 SCAN_ROOT=./documents
-EMBEDDING_MODEL=all-MiniLM-L6-v2
+EMBEDDING_MODEL=BAAI/bge-small-en-v1.5
 CHUNK_SIZE=512
 OVERLAP_SIZE=50
 QDRANT_URL=http://localhost:6333
 QDRANT_PERSISTENCE_PATH=./data/qdrant
 MCP_HOST=localhost
 MCP_PORT=5000
-""")
+"""
+)
 
 # Example 8: Validation
 print("\n8. SETTINGS VALIDATION")

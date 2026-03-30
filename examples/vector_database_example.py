@@ -50,7 +50,7 @@ Statistical analysis and visualization are key techniques in data science."""
     scanner = FileScanner(sample_dir)
     parser = DocumentParser()
     chunking_service = ChunkingService(chunk_size=150, overlap_size=30)
-    embedding_service = EmbeddingService(model_name="all-MiniLM-L6-v2")
+    embedding_service = EmbeddingService(model_name="BAAI/bge-small-en-v1.5")
 
     # Use persistent storage
     db_path = Path("./data_db/qdrant")

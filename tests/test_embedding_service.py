@@ -13,7 +13,6 @@ Tests cover:
 
 import pytest
 from datetime import datetime
-from pathlib import Path
 
 from ragindexer import (
     EmbeddingService,
@@ -29,7 +28,6 @@ from ragindexer import (
     DocumentParser,
     FileScanner,
 )
-from ragindexer import FileFormat
 
 
 class TestEmbeddingServiceBasic:
@@ -39,7 +37,7 @@ class TestEmbeddingServiceBasic:
     def embedding_service(self):
         """Create an EmbeddingService instance."""
         return EmbeddingService(
-            model_name="all-MiniLM-L6-v2",
+            model_name="BAAI/bge-small-en-v1.5",
             batch_size=32,
         )
 
@@ -79,7 +77,7 @@ class TestEmbeddingServiceBasic:
 
         assert isinstance(result, EmbeddingResult)
         assert result.total_chunks == len(sample_chunks)
-        assert result.embedding_model == "all-MiniLM-L6-v2"
+        assert result.embedding_model == "BAAI/bge-small-en-v1.5"
         assert result.embedding_dim == 384  # MiniLM dimension
 
     def test_embed_chunks_creates_embeddings(self, embedding_service, sample_chunks):
@@ -227,8 +225,6 @@ class TestEmbeddingServiceSimilarity:
         text2 = "A feline rested on the rug."
         text3 = "The weather is sunny today."
 
-        import numpy as np
-
         emb1 = service.embed_text(text1).tolist()
         emb2 = service.embed_text(text2).tolist()
         emb3 = service.embed_text(text3).tolist()
@@ -245,8 +241,8 @@ class TestEmbeddingServiceCaching:
 
     def test_model_cache_same_model(self):
         """Test that same model is cached."""
-        service1 = EmbeddingService(model_name="all-MiniLM-L6-v2")
-        service2 = EmbeddingService(model_name="all-MiniLM-L6-v2")
+        service1 = EmbeddingService(model_name="BAAI/bge-small-en-v1.5")
+        service2 = EmbeddingService(model_name="BAAI/bge-small-en-v1.5")
 
         # Should be same instance due to cache
         assert service1.model is service2.model
@@ -254,7 +250,7 @@ class TestEmbeddingServiceCaching:
     def test_clear_cache(self):
         """Test cache clearing."""
         service = EmbeddingService()
-        initial_cache_size = len(EmbeddingService._model_cache)
+        # initial_cache_size = len(EmbeddingService._model_cache)
 
         service.clear_cache()
 

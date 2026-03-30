@@ -5,9 +5,6 @@ Integration tests for complete pipeline: FileScanner → DocumentParser → Chun
 Tests verify that all components work seamlessly together.
 """
 
-import pytest
-from pathlib import Path
-from datetime import datetime
 
 from ragindexer import (
     FileScanner,
@@ -355,13 +352,13 @@ They have multiple layers for processing.
         assert chunking_result.total_chunks > 0
 
         # Step 4: Embed
-        embedding_service = EmbeddingService(model_name="all-MiniLM-L6-v2")
+        embedding_service = EmbeddingService(model_name="BAAI/bge-small-en-v1.5")
         embedding_result = embedding_service.embed_chunks(chunking_result.chunks)
 
         # Verify embedding results
         assert embedding_result.total_chunks == chunking_result.total_chunks
         assert embedding_result.embedding_dim == 384
-        assert embedding_result.embedding_model == "all-MiniLM-L6-v2"
+        assert embedding_result.embedding_model == "BAAI/bge-small-en-v1.5"
         assert embedding_result.total_time_seconds > 0
 
         # Verify embedded chunks
@@ -375,7 +372,7 @@ They have multiple layers for processing.
             assert len(embedded_chunk.embedding) == 384
             assert all(isinstance(val, (int, float)) for val in embedded_chunk.embedding)
             assert embedded_chunk.embedding_dim == 384
-            assert embedded_chunk.embedding_model == "all-MiniLM-L6-v2"
+            assert embedded_chunk.embedding_model == "BAAI/bge-small-en-v1.5"
 
     def test_pipeline_embeddings_multiple_documents(self, tmp_path):
         """Test embedding pipeline with multiple documents."""
@@ -393,7 +390,7 @@ They have multiple layers for processing.
         scanner = FileScanner(tmp_path)
         parser = DocumentParser()
         chunking_service = ChunkingService(chunk_size=80, overlap_size=15)
-        embedding_service = EmbeddingService(model_name="all-MiniLM-L6-v2")
+        embedding_service = EmbeddingService(model_name="BAAI/bge-small-en-v1.5")
 
         # Process all documents
         scan_result = scanner.scan()
@@ -433,7 +430,7 @@ They have multiple layers for processing.
         chunking_service = ChunkingService(chunk_size=50, overlap_size=10)
         chunking_result = chunking_service.chunk(parsed_doc)
 
-        embedding_service = EmbeddingService(model_name="all-MiniLM-L6-v2")
+        embedding_service = EmbeddingService(model_name="BAAI/bge-small-en-v1.5")
         embedding_result = embedding_service.embed_chunks(chunking_result.chunks)
 
         # Verify metadata chain
@@ -448,7 +445,7 @@ They have multiple layers for processing.
             assert chunk_metadata.total_chunks > 0
 
             # Embedding metadata correct
-            assert embedded_chunk.embedding_model == "all-MiniLM-L6-v2"
+            assert embedded_chunk.embedding_model == "BAAI/bge-small-en-v1.5"
             assert embedded_chunk.embedding_dim == 384
 
     def test_pipeline_embedding_similarity(self, tmp_path):
@@ -466,7 +463,7 @@ Cats are independent animals. They enjoy their own space.
         scanner = FileScanner(tmp_path)
         parser = DocumentParser()
         chunking_service = ChunkingService(chunk_size=80, overlap_size=15)
-        embedding_service = EmbeddingService(model_name="all-MiniLM-L6-v2")
+        embedding_service = EmbeddingService(model_name="BAAI/bge-small-en-v1.5")
 
         scan_result = scanner.scan()
         file_info = list(scan_result.files.values())[0]
@@ -511,7 +508,7 @@ Cats are independent animals. They enjoy their own space.
         scanner = FileScanner(tmp_path)
         parser = DocumentParser()
         chunking_service = ChunkingService(chunk_size=100, overlap_size=20)
-        embedding_service = EmbeddingService(batch_size=16, model_name="all-MiniLM-L6-v2")
+        embedding_service = EmbeddingService(batch_size=16, model_name="BAAI/bge-small-en-v1.5")
 
         scan_result = scanner.scan()
         file_info = list(scan_result.files.values())[0]
@@ -544,7 +541,7 @@ Cats are independent animals. They enjoy their own space.
         chunking_result = chunking_service.chunk(parsed_doc)
 
         # Test with multiple models (start with default)
-        model_name = "all-MiniLM-L6-v2"
+        model_name = "BAAI/bge-small-en-v1.5"
         embedding_service = EmbeddingService(model_name=model_name)
         embedding_result = embedding_service.embed_chunks(chunking_result.chunks)
 
@@ -571,7 +568,7 @@ They enable semantic similarity calculations.
         scanner = FileScanner(tmp_path)
         parser = DocumentParser()
         chunking_service = ChunkingService(chunk_size=100, overlap_size=20)
-        embedding_service = EmbeddingService(model_name="all-MiniLM-L6-v2")
+        embedding_service = EmbeddingService(model_name="BAAI/bge-small-en-v1.5")
 
         scan_result = scanner.scan()
         file_info = list(scan_result.files.values())[0]

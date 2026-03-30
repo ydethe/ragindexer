@@ -27,7 +27,8 @@ def example_1_basic_embedding():
     sample_dir.mkdir(exist_ok=True)
 
     sample_file = sample_dir / "example.txt"
-    sample_file.write_text("""
+    sample_file.write_text(
+        """
     Machine learning is a subset of artificial intelligence.
     It enables systems to learn and improve from experience.
 
@@ -36,7 +37,8 @@ def example_1_basic_embedding():
 
     Embeddings are numerical representations of text.
     They capture semantic meaning and enable similarity calculations.
-    """)
+    """
+    )
 
     # Step 1: Scan for files
     print("Step 1: Scanning for files...")
@@ -59,7 +61,7 @@ def example_1_basic_embedding():
 
     # Step 4: Embed chunks
     print("\nStep 4: Embedding chunks...")
-    embedding_service = EmbeddingService(model_name="all-MiniLM-L6-v2")
+    embedding_service = EmbeddingService(model_name="BAAI/bge-small-en-v1.5")
     embedding_result = embedding_service.embed_chunks(chunking_result.chunks)
     print(
         f"Embedded {embedding_result.total_chunks} chunks in {embedding_result.total_time_seconds:.2f}s"
@@ -144,14 +146,14 @@ def example_4_model_caching():
     # First instantiation (loads model)
     print("Creating EmbeddingService #1...")
     start = time.time()
-    service1 = EmbeddingService(model_name="all-MiniLM-L6-v2")
+    service1 = EmbeddingService(model_name="BAAI/bge-small-en-v1.5")
     time1 = time.time() - start
     print(f"Time: {time1:.3f}s")
 
     # Second instantiation (uses cache)
     print("\nCreating EmbeddingService #2...")
     start = time.time()
-    service2 = EmbeddingService(model_name="all-MiniLM-L6-v2")
+    service2 = EmbeddingService(model_name="BAAI/bge-small-en-v1.5")
     time2 = time.time() - start
     print(f"Time: {time2:.3f}s")
 
@@ -160,7 +162,7 @@ def example_4_model_caching():
     if time2 > 0:
         print(f"Speedup: {time1/time2:.1f}x faster (from cache)")
     else:
-        print(f"Cache is effective (second load < 1ms)")
+        print("Cache is effective (second load < 1ms)")
 
 
 def example_5_batch_processing():
@@ -189,7 +191,9 @@ def example_5_batch_processing():
     for batch_size in [1, 5, 10]:
         import time
 
-        embedding_service = EmbeddingService(batch_size=batch_size, model_name="all-MiniLM-L6-v2")
+        embedding_service = EmbeddingService(
+            batch_size=batch_size, model_name="BAAI/bge-small-en-v1.5"
+        )
 
         start = time.time()
         result = embedding_service.embed_chunks(test_chunks)

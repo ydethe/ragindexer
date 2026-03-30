@@ -71,7 +71,7 @@ class TestVectorDatabaseBasic:
                 chunk=chunk,
                 embedding=embedding,
                 embedding_dim=384,
-                embedding_model="all-MiniLM-L6-v2",
+                embedding_model="BAAI/bge-small-en-v1.5",
             )
             chunks.append(embedded_chunk)
 
@@ -270,7 +270,7 @@ class TestVectorDatabaseIntegration:
         )
 
         # Create sample embedded chunks using EmbeddingService
-        embedding_service = EmbeddingService(model_name="all-MiniLM-L6-v2")
+        embedding_service = EmbeddingService(model_name="BAAI/bge-small-en-v1.5")
 
         # Create sample chunks
         chunks = []
@@ -337,7 +337,7 @@ They process information hierarchically."""
 
         parser = DocumentParser()
         chunking_service = ChunkingService(chunk_size=100, overlap_size=20)
-        embedding_service = EmbeddingService(model_name="all-MiniLM-L6-v2")
+        embedding_service = EmbeddingService(model_name="BAAI/bge-small-en-v1.5")
         vector_db = VectorDatabaseService(
             vector_size=384,
             persistence_path=tmp_path / "qdrant",
@@ -363,7 +363,7 @@ class TestVectorDatabaseSearch:
     def test_semantic_search_quality(self, tmp_path):
         """Test that semantic search returns relevant results."""
         vector_db = VectorDatabaseService(vector_size=384, persistence_path=tmp_path / "qdrant")
-        embedding_service = EmbeddingService(model_name="all-MiniLM-L6-v2")
+        embedding_service = EmbeddingService(model_name="BAAI/bge-small-en-v1.5")
 
         # Create semantically related chunks
         texts = [

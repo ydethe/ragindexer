@@ -8,11 +8,11 @@ L'`EmbeddingService` génère des vecteurs d'embedding (représentations vectori
 
 ### Modèle d'embedding
 
-- **Par défaut:** `all-MiniLM-L6-v2` (SBERT)
+- **Par défaut:** `BAAI/bge-small-en-v1.5` (fastembed)
   - 384 dimensions
-  - ~33M paramètres
-  - GPU optionnel (CPU par défaut)
-  - Modèle léger et efficace
+  - ONNX-based (CPU-optimized, pas GPU requis)
+  - Téléchargement automatique au premier usage
+  - Modèle léger et très rapide
 
 ### Processus d'embedding
 
@@ -21,7 +21,7 @@ TextChunk
     ↓
 Extraction du texte
     ↓
-SentenceTransformer.encode()
+fastembed TextEmbedding.embed()
     ↓
 Numpy array (384-dim)
     ↓
@@ -38,10 +38,10 @@ Représente un chunk avec son vecteur d'embedding.
 
 ```python
 class EmbeddedChunk(BaseModel):
-    chunk: TextChunk                    # Chunk original avec métadonnées
-    embedding: List[float]              # Vecteur d'embedding (384 floats)
-    embedding_dim: int                  # Dimension du vecteur
-    embedding_model: str                # Modèle utilisé (ex: "all-MiniLM-L6-v2")
+    chunk: TextChunk  # Chunk original avec métadonnées
+    embedding: List[float]  # Vecteur d'embedding (384 floats)
+    embedding_dim: int  # Dimension du vecteur
+    embedding_model: str  # Modèle utilisé (ex: "BAAI/bge-small-en-v1.5")
 ```
 
 ### `EmbeddingResult`
@@ -50,13 +50,13 @@ Résultat du processus d'embedding.
 
 ```python
 class EmbeddingResult(BaseModel):
-    document_path: str                  # Chemin du document source
-    embedded_chunks: List[EmbeddedChunk] # Chunks avec embeddings
-    total_chunks: int                   # Nombre de chunks embedded
-    embedding_model: str                # Modèle utilisé
-    embedding_dim: int                  # Dimension des embeddings
-    total_time_seconds: float           # Temps d'exécution
-    embedded_at: datetime               # Timestamp du processus
+    document_path: str  # Chemin du document source
+    embedded_chunks: List[EmbeddedChunk]  # Chunks avec embeddings
+    total_chunks: int  # Nombre de chunks embedded
+    embedding_model: str  # Modèle utilisé
+    embedding_dim: int  # Dimension des embeddings
+    total_time_seconds: float  # Temps d'exécution
+    embedded_at: datetime  # Timestamp du processus
 ```
 
 ### `EmbeddingService`
@@ -67,20 +67,19 @@ Service principal pour générer les embeddings.
 class EmbeddingService:
     def __init__(
         self,
-        model_name: str = "all-MiniLM-L6-v2",
+        model_name: str = "BAAI/bge-small-en-v1.5",
         batch_size: int = 32,
-        device: str = "cpu",
         logger_instance: Optional[logging.Logger] = None,
-    )
+    ):
+        pass
 ```
 
 #### Paramètres d'initialisation
 
 | Paramètre | Type | Défaut | Description |
 |-----------|------|--------|-------------|
-| `model_name` | str | "all-MiniLM-L6-v2" | Modèle HuggingFace à utiliser |
+| `model_name` | str | "BAAI/bge-small-en-v1.5" | Modèle fastembed à utiliser |
 | `batch_size` | int | 32 | Taille des batches pour processing |
-| `device` | str | "cpu" | Device ("cpu" ou "cuda") |
 | `logger_instance` | Logger | None | Logger custom (optional) |
 
 ## Méthodes principales
@@ -113,7 +112,7 @@ from ragindexer import ChunkingService, EmbeddingService
 
 # Créer les services
 chunking_service = ChunkingService(chunk_size=512, overlap_size=50)
-embedding_service = EmbeddingService(model_name="all-MiniLM-L6-v2")
+embedding_service = EmbeddingService(model_name="BAAI/bge-small-en-v1.5")
 
 # Chunk le document
 chunking_result = chunking_service.chunk(parsed_document)
@@ -229,26 +228,18 @@ Les modèles sont cachés au niveau de la classe pour éviter les rechargements.
 
 ```python
 # Première initialisation: charge le modèle (~50-100ms)
-service1 = EmbeddingService(model_name="all-MiniLM-L6-v2")
+service1 = EmbeddingService(model_name="BAAI/bge-small-en-v1.5")
 
 # Deuxième initialisation: utilise le cache (~0ms)
-service2 = EmbeddingService(model_name="all-MiniLM-L6-v2")
+service2 = EmbeddingService(model_name="BAAI/bge-small-en-v1.5")
 
 # Les deux pointent vers le même modèle en mémoire
 assert service1.model is service2.model
 ```
 
-### CPU vs GPU
+### ONNX (CPU-optimized)
 
-Par défaut, CPU est utilisé (pas de GPU requis).
-
-```python
-# GPU (si disponible)
-embedding_service = EmbeddingService(device="cuda")
-
-# CPU (par défaut)
-embedding_service = EmbeddingService(device="cpu")
-```
+fastembed utilise ONNX Runtime pour des inférences rapides sur CPU, sans PyTorch ni GPU requis.
 
 ## Intégration avec ChunkingService
 
@@ -279,27 +270,16 @@ for file_path, file_info in scan_result.files.items():
     # file_info → ParsedDocument.metadata → ChunkMetadata → EmbeddedChunk.chunk.metadata
 ```
 
-## Modèles alternatifs
+## Modèles disponibles (fastembed)
 
-Vous pouvez utiliser d'autres modèles SBERT:
+| Modèle | Dimensions | Taille | Qualité |
+|--------|-----------|--------|---------|
+| `BAAI/bge-small-en-v1.5` | 384 | ~33MB | Bon (défaut) |
+| `BAAI/bge-base-en-v1.5` | 768 | ~109MB | Meilleur |
+| `BAAI/bge-large-en-v1.5` | 1024 | ~335MB | Excellent |
+| `sentence-transformers/all-MiniLM-L6-v2` | 384 | ~22MB | Bon |
 
-```python
-# Modèles disponibles (du plus léger au plus lourd):
-
-# Ultra-léger (82 dim, très rapide)
-embedding_service = EmbeddingService(model_name="all-MiniLM-L6-v2")
-
-# Léger (384 dim, bon rapport perf/qualité)
-embedding_service = EmbeddingService(model_name="sentence-transformers/all-MiniLM-L6-v2")
-
-# Moyen (384 dim, meilleure qualité)
-embedding_service = EmbeddingService(model_name="all-mpnet-base-v2")
-
-# Plus lourd (768 dim, très bonne qualité)
-embedding_service = EmbeddingService(model_name="all-roberta-large-v1")
-```
-
-**Note:** Premier chargement d'un modèle télécharge ~100-500MB du HuggingFace Hub.
+**Note:** fastembed télécharge les modèles automatiquement dans `~/.cache/fastembed/` au premier usage.
 
 ## Gestion d'erreurs
 
@@ -347,11 +327,11 @@ Sur une machine CPU standard (Intel i7, 8 cores):
 
 | Chunks | Temps | Vitesse | Modèle |
 |--------|-------|---------|--------|
-| 10 | 0.5s | 20 chunks/s | all-MiniLM-L6-v2 |
-| 100 | 2.5s | 40 chunks/s | all-MiniLM-L6-v2 |
-| 1000 | 20s | 50 chunks/s | all-MiniLM-L6-v2 |
+| 10 | 0.3s | 33 chunks/s | BAAI/bge-small-en-v1.5 |
+| 100 | 1.5s | 66 chunks/s | BAAI/bge-small-en-v1.5 |
+| 1000 | 12s | 83 chunks/s | BAAI/bge-small-en-v1.5 |
 
-(Premier run inclut le chargement du modèle ~1-2s)
+(Premier run inclut le téléchargement du modèle si non en cache)
 
 ## Cas d'usage courants
 
@@ -374,10 +354,7 @@ query_embedding = embedding_service.embed_text(query)
 
 # Comparer avec les chunks indexés
 for embedded_chunk in indexed_chunks:
-    score = embedding_service.similarity(
-        query_embedding.tolist(),
-        embedded_chunk.embedding
-    )
+    score = embedding_service.similarity(query_embedding.tolist(), embedded_chunk.embedding)
     if score > 0.7:  # Threshold de similarité
         print(f"Match: {embedded_chunk.chunk.content[:50]}... (score: {score:.3f})")
 ```
@@ -387,20 +364,16 @@ for embedded_chunk in indexed_chunks:
 ```python
 # Trouver les chunks similaires (potentiellement dupliqués)
 for i, chunk1 in enumerate(embedded_chunks):
-    for chunk2 in embedded_chunks[i+1:]:
-        similarity = embedding_service.similarity(
-            chunk1.embedding,
-            chunk2.embedding
-        )
+    for chunk2 in embedded_chunks[i + 1 :]:
+        similarity = embedding_service.similarity(chunk1.embedding, chunk2.embedding)
         if similarity > 0.95:
             print(f"Possible duplicate: {similarity:.3f}")
 ```
 
 ## Dépendances
 
-- `sentence-transformers>=3.0.0` - Modèles SBERT
+- `fastembed>=0.4.0` - Embeddings ONNX-based (remplace sentence-transformers)
 - `numpy>=1.24.0` - Opérations vectorielles
-- `torch` - Automatiquement installé par sentence-transformers
 
 ## Voir aussi
 

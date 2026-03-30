@@ -125,7 +125,7 @@ Splits text into semantic chunks with overlap for continuity.
 ### Component 4: Embedding Service (✅ Implemented)
 **File**: `src/ragindexer/EmbeddingService.py`
 
-Generates vector embeddings using sentence-transformers (CPU-optimized).
+Generates vector embeddings using fastembed (ONNX-based, CPU-optimized).
 
 ### Component 5: Vector Database Service (✅ Implemented)
 **File**: `src/ragindexer/VectorDatabaseService.py`

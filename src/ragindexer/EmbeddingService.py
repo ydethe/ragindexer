@@ -2,8 +2,8 @@
 """
 Embedding Service Component
 
-Generates vector embeddings for document chunks using local sentence
-transformers. Supports batch processing for performance optimization.
+Generates vector embeddings for document chunks using fastembed (ONNX-based).
+Supports batch processing for performance optimization.
 """
 
 import logging
@@ -12,9 +12,9 @@ from datetime import datetime
 
 import numpy as np
 from pydantic import BaseModel, Field
-from sentence_transformers import SentenceTransformer
+from fastembed import TextEmbedding
 
-from ragindexer.ChunkingService import TextChunk, ChunkMetadata
+from ragindexer.ChunkingService import TextChunk
 
 logger = logging.getLogger(__name__)
 
@@ -63,7 +63,7 @@ class EmbeddingService:
     """
     Service for generating vector embeddings for text chunks.
 
-    Uses sentence-transformers for local, GPU-optional embedding generation.
+    Uses fastembed (ONNX-based) for fast, CPU-optimized embedding generation.
     Supports batch processing for performance.
     """
 
@@ -72,43 +72,43 @@ class EmbeddingService:
 
     def __init__(
         self,
-        model_name: str = "all-MiniLM-L6-v2",
+        model_name: str = "BAAI/bge-small-en-v1.5",
         batch_size: int = 32,
         logger_instance: Optional[logging.Logger] = None,
-        device: str = "cpu",
     ):
         """
         Initialize the EmbeddingService.
 
         Args:
-            model_name: HuggingFace model ID (default: all-MiniLM-L6-v2)
+            model_name: fastembed model ID (default: BAAI/bge-small-en-v1.5)
             batch_size: Batch size for embedding (default: 32)
             logger_instance: Logger to use (defaults to module logger)
-            device: Device to use for embeddings ('cpu' or 'cuda')
 
         Note:
             Uses cached models to avoid reloading same model multiple times.
+            fastembed downloads models automatically on first use.
         """
         self.model_name = model_name
         self.batch_size = batch_size
         self.logger = logger_instance or logger
-        self.device = device
 
         # Load or get from cache
         if model_name not in self._model_cache:
             self.logger.info(f"Loading embedding model: {model_name}")
             try:
-                self._model_cache[model_name] = SentenceTransformer(model_name, device=device)
-                self.logger.info(
-                    f"Model loaded successfully. "
-                    f"Dimensions: {self._model_cache[model_name].get_sentence_embedding_dimension()}"
-                )
+                model = TextEmbedding(model_name=model_name)
+                # Determine embedding dimension by running a test embedding
+                test_embedding = list(model.embed(["test"]))[0]
+                dim = len(test_embedding)
+                self._model_cache[model_name] = model
+                self._model_cache[f"{model_name}_dim"] = dim
+                self.logger.info(f"Model loaded successfully. Dimensions: {dim}")
             except Exception as e:
                 self.logger.error(f"Failed to load model {model_name}: {e}")
                 raise
 
         self.model = self._model_cache[model_name]
-        self.embedding_dim = self.model.get_sentence_embedding_dimension()
+        self.embedding_dim = self._model_cache[f"{model_name}_dim"]
 
     def embed_chunks(self, chunks: List[TextChunk]) -> EmbeddingResult:
         """
@@ -127,7 +127,7 @@ class EmbeddingService:
         if not chunks:
             raise ValueError("Cannot embed empty list of chunks")
 
-        self.logger.info(f"Embedding {len(chunks)} chunks " f"using model {self.model_name}")
+        self.logger.info(f"Embedding {len(chunks)} chunks using model {self.model_name}")
 
         try:
             start_time = datetime.now()
@@ -135,16 +135,10 @@ class EmbeddingService:
             # Extract texts from chunks
             texts = [chunk.content for chunk in chunks]
 
-            # Generate embeddings with batch processing
-            embeddings = self.model.encode(
-                texts,
-                batch_size=self.batch_size,
-                convert_to_numpy=True,
-                show_progress_bar=False,
-            )
-
-            # Convert numpy arrays to lists for JSON serialization
-            embeddings_list = [embedding.tolist() for embedding in embeddings]
+            # Generate embeddings with fastembed (returns a generator of numpy arrays)
+            embeddings_list = [
+                emb.tolist() for emb in self.model.embed(texts, batch_size=self.batch_size)
+            ]
 
             # Create EmbeddedChunk objects
             embedded_chunks = [
@@ -174,8 +168,7 @@ class EmbeddingService:
 
             self.logger.info(
                 f"Successfully embedded {result.total_chunks} chunks "
-                f"in {total_seconds:.2f}s ({len(texts) / total_seconds:.1f} "
-                f"chunks/sec)"
+                f"in {total_seconds:.2f}s ({len(texts) / total_seconds:.1f} chunks/sec)"
             )
 
             return result
@@ -216,7 +209,7 @@ class EmbeddingService:
             Exception: If embedding generation fails
         """
         try:
-            embedding = self.model.encode(text, convert_to_numpy=True, normalize_embeddings=False)
+            embedding = list(self.model.embed([text]))[0]
             return embedding
         except Exception as e:
             self.logger.error(f"Failed to embed text: {e}")
@@ -238,7 +231,7 @@ class EmbeddingService:
         """
         if len(embedding1) != len(embedding2):
             raise ValueError(
-                f"Embedding dimensions mismatch: " f"{len(embedding1)} vs {len(embedding2)}"
+                f"Embedding dimensions mismatch: {len(embedding1)} vs {len(embedding2)}"
             )
 
         # Convert to numpy arrays if needed

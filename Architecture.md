@@ -126,21 +126,21 @@ ragindexer est un système d'indexation et de recherche sémantique basé sur de
 **Status:** 22/22 tests, 88% coverage. Voir `tests/test_embedding_service.py`
 
 **Fonctionnalités clés:**
-- Support sentence-transformers (modèles locaux, pas GPU requis)
+- fastembed (ONNX-based) pour inférence CPU rapide, pas GPU requis
 - Batch processing pour performance
 - Caching de modèles (class-level) pour éviter rechargement
 - Méthode similarity() pour calcul de similarité cosinus
 - embed_text() pour embeddings de requêtes de recherche
 - Métadonnées complètes préservées (source_file, document_title, chunk_index, etc.)
 
-**Modèle par défaut:** `all-MiniLM-L6-v2` (384 dimensions, ~33M paramètres)
+**Modèle par défaut:** `BAAI/bge-small-en-v1.5` (384 dimensions, ~33MB ONNX)
 
 **Intégration avec ChunkingService:**
 ```python
 from ragindexer import ChunkingService, EmbeddingService
 
 chunking_service = ChunkingService(chunk_size=512, overlap_size=50)
-embedding_service = EmbeddingService(model_name="all-MiniLM-L6-v2")
+embedding_service = EmbeddingService(model_name="BAAI/bge-small-en-v1.5")
 
 chunking_result = chunking_service.chunk(parsed_document)
 embedding_result = embedding_service.embed_chunks(chunking_result.chunks)
@@ -188,16 +188,14 @@ embedding_result = embedding_service.embed_chunks(chunking_result.chunks)
 vector_db = VectorDatabaseService(persistence_path=None)
 
 # Persistent (production)
-vector_db = VectorDatabaseService(
-    persistence_path=Path("./data/qdrant")
-)
+vector_db = VectorDatabaseService(persistence_path=Path("./data/qdrant"))
 ```
 
 **Intégration avec EmbeddingService:**
 ```python
 from ragindexer import EmbeddingService, VectorDatabaseService
 
-embedding_service = EmbeddingService(model_name="all-MiniLM-L6-v2")
+embedding_service = EmbeddingService(model_name="BAAI/bge-small-en-v1.5")
 vector_db = VectorDatabaseService(vector_size=384)
 
 # Pipeline complète
@@ -338,12 +336,9 @@ from ragindexer import FileScanner, ChunkingService, EmbeddingService
 
 scanner = FileScanner(settings.get_scan_root())
 chunking_service = ChunkingService(
-    chunk_size=settings.CHUNK_SIZE,
-    overlap_size=settings.OVERLAP_SIZE
+    chunk_size=settings.CHUNK_SIZE, overlap_size=settings.OVERLAP_SIZE
 )
-embedding_service = EmbeddingService(
-    model_name=settings.EMBEDDING_MODEL
-)
+embedding_service = EmbeddingService(model_name=settings.EMBEDDING_MODEL)
 ```
 
 ---
@@ -402,7 +397,7 @@ Claude Code [utilise le contexte]
 | DOCX Parser | python-docx | Extrait texte structuré |
 | Text Parser | Built-in Python | Lecture simple |
 | Chunking | LangChain ou custom | Gestion intelligente des limites |
-| Embedding | sentence-transformers | Modèles locaux, pas GPU requis |
+| Embedding | fastembed (ONNX) | Modèles locaux ONNX, CPU-optimized, pas GPU requis |
 | Vector DB | Chroma / PostgreSQL+pgvector | Open source, autohébergé, facile |
 | MCP Server | MCP SDK | Standard de communication |
 | Configuration | Pydantic | Validation et gestion d'env |

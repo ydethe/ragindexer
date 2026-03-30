@@ -37,9 +37,9 @@ def main():
         persistence_path=db_path,
         chunk_size=512,
         overlap_size=50,
-        embedding_model="all-MiniLM-L6-v2",
+        embedding_model="BAAI/bge-small-en-v1.5",
     )
-    print(f"   ✅ SyncManager initialized")
+    print("   ✅ SyncManager initialized")
     print(f"   📁 Document root: {doc_root}")
     print(f"   💾 Database path: {db_path}")
 
@@ -47,7 +47,7 @@ def main():
     print("\n2️⃣  Performing full initial indexing...")
     result = sync_manager.full_sync()
 
-    print(f"\n   📊 Indexing Results:")
+    print("\n   📊 Indexing Results:")
     print(f"   - Overall status: {result.overall_status.value}")
     print(f"   - Files processed: {result.total_files_processed}")
     print(f"   - Files added: {result.total_files_added}")
@@ -57,7 +57,7 @@ def main():
 
     # Show per-file results
     if result.file_results:
-        print(f"\n   📄 Per-file Details:")
+        print("\n   📄 Per-file Details:")
         for rel_path, file_result in result.file_results.items():
             status_emoji = "✅" if file_result.status == SyncStatus.COMPLETED else "❌"
             print(f"   {status_emoji} {rel_path}")
@@ -90,7 +90,7 @@ def main():
     print("\n5️⃣  Example: Semantic Search Setup:")
     print("   To use the indexed documents for semantic search:")
 
-    embedding_service = EmbeddingService(model_name="all-MiniLM-L6-v2")
+    embedding_service = EmbeddingService(model_name="BAAI/bge-small-en-v1.5")
 
     # Example search query
     query_text = "What is machine learning?"

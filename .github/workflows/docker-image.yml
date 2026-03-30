@@ -51,7 +51,7 @@ jobs:
         run: uv sync --all-extras --all-groups
 
       - name: Run tests
-        run: bash all_tests.sh
+        run: uv run pytest
         env:
           LOGLEVEL: 'info'
           SCAN_ROOT: ./documents
@@ -61,18 +61,18 @@ jobs:
           QDRANT_URL: http://localhost:6333
           QDRANT_PERSISTENCE_PATH: ./data/qdrant
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
+      # - name: Setup Pages
+      #   uses: actions/configure-pages@v5
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          # Upload entire repository
-          path: 'htmldoc'
+      # - name: Upload artifact
+      #   uses: actions/upload-pages-artifact@v3
+      #   with:
+      #     # Upload entire repository
+      #     path: 'htmldoc'
 
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      # - name: Deploy to GitHub Pages
+      #   id: deployment
+      #   uses: actions/deploy-pages@v4
 
       - name: Build wheel and install
         run: |

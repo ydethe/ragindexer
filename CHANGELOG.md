@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- insertion marker -->
+## [v1.0.1](https://github.com/ydethe/ragindexer/releases/tag/v1.0.1) - 2026-03-30
+
+<small>[Compare with v1.0.0](https://github.com/ydethe/ragindexer/compare/v1.0.0...v1.0.1)</small>
+
+### Fixed
+
+- Fixed merge ([42b5510](https://github.com/ydethe/ragindexer/commit/42b55108e3329a3179345061b4e889bb9fe935e9) by Yann de The).
+
 ## [v1.0.0](https://github.com/ydethe/ragindexer/releases/tag/v1.0.0) - 2026-03-30
 
 <small>[Compare with first commit](https://github.com/ydethe/ragindexer/compare/94eb7c1b309263c638f3e92cea40ebdc13d83ac1...v1.0.0)</small>

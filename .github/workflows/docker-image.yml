@@ -51,28 +51,15 @@ jobs:
         run: uv sync --all-extras --all-groups
 
       - name: Run tests
-        run: bash all_tests.sh
+        run: uv run pytest
         env:
           LOGLEVEL: 'info'
+          SCAN_ROOT: ./documents
+          EMBEDDING_MODEL: BAAI/bge-small-en-v1.5
+          CHUNK_SIZE: 512
+          OVERLAP_SIZE: 50
           QDRANT_URL: http://localhost:6333
-          QDRANT_QUERY_LIMIT: 25
-          QDRANT__SERVICE__API_KEY: ${{ secrets.QDRANT__SERVICE__API_KEY }}
-          QDRANT__SERVICE__READ_ONLY_API_KEY: ${{ secrets.QDRANT__SERVICE__READ_ONLY_API_KEY }}
-          QDRANT_API_KEY: ${{ secrets.QDRANT__SERVICE__API_KEY }}
-          OPEN_MODEL_API_KEY: ${{ secrets.OPENAPI_API_KEY }}
-          DOCS_PATH: tests/inputs/docs
-          EMAILS_PATH: tests/inputs/emails
-          STATE_DB_PATH: .data/index_state.db
-          COLLECTION_NAME: test
-          DAV_ROOT: https://webdav.domain.tld
-          EMBEDDING_MODEL: sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
-          EMBEDDING_MODEL_TRUST_REMOTE_CODE: false
-          MIN_EXPECTED_CHAR: 100
-          CHUNK_SIZE: 400
-          CHUNK_OVERLAP: 80
-          OCR_LANG: "fra+eng"
-          OPEN_MODEL_PREF: 'gpt-4o'
-          TORCH_NUM_THREADS: 3
+          QDRANT_PERSISTENCE_PATH: ./data/qdrant
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

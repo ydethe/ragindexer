@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- Added Dockerfile and github action ([5a1bf5a](https://github.com/ydethe/ragindexer/commit/5a1bf5ae9b72269a2497de21df6fb9e590ad669a) by Yann de The).
+- Added Dockerfile and github action ([f86ba4e](https://github.com/ydethe/ragindexer/commit/f86ba4e5a4e3c43b9f9ee7f1d9dfbcc9e9e1a59b) by Yann de The).
 - Added pytest profiling ([6c6c20f](https://github.com/ydethe/ragindexer/commit/6c6c20f2a71f927998b5cd89c82495a4ba244dd0) by Yann de The).
 - Added precommit hooks ([dbb6aee](https://github.com/ydethe/ragindexer/commit/dbb6aeef0eb081a7d842ccffdbbeb75fd8f3a2f9) by Yann de The).
 - Added QdrantIndexer.get_vector_by_id ([4ce4c35](https://github.com/ydethe/ragindexer/commit/4ce4c35f5fd8dc7251f4df146cc92aeecae74693) by Yann de The).

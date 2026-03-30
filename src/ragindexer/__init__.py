@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 
 .. include:: ../../README.md
@@ -8,7 +9,7 @@
 
 To run tests, just run:
 
-    pytest
+    python -m pytest
 
 ## Test reports
 
@@ -16,27 +17,75 @@ To run tests, just run:
 
 [See coverage](../coverage/index.html)
 
-.. include:: ../../CHANGELOG.md
-
 """
 
-import sys
 import logging
 
-from pythonjsonlogger.json import JsonFormatter
-
-from .config import config
-
+from ragindexer.FileScanner import FileScanner, FileInfo, FileFormat, ScanResult, FileChange
+from ragindexer.DocumentParser import (
+    DocumentParser,
+    ParsedDocument,
+    DocumentMetadata,
+)
+from ragindexer.ChunkingService import (
+    ChunkingService,
+    TextChunk,
+    ChunkMetadata,
+    ChunkingResult,
+)
+from ragindexer.EmbeddingService import (
+    EmbeddingService,
+    EmbeddedChunk,
+    EmbeddingResult,
+)
+from ragindexer.VectorDatabaseService import (
+    VectorDatabaseService,
+    StoredEmbedding,
+    SearchResult,
+    VectorDatabaseResult,
+)
+from ragindexer.SyncManager import (
+    SyncManager,
+    SyncStatus,
+    FileSyncResult,
+    SyncOperationResult,
+)
+from ragindexer.Settings import Settings
+from ragindexer.Orchestrator import (
+    SyncEventHandler,
+    PipelineOrchestrator,
+)
 
 # création de l'objet logger qui va nous servir à écrire dans les logs
-logger = logging.getLogger("ragindexer_logger")
-logger.setLevel(config.LOGLEVEL.upper())
+logger = logging.getLogger(__name__)
 
-# Create stream handler for stdout
-logHandler = logging.StreamHandler(sys.stdout)
-
-# JSON formatter
-formatter = JsonFormatter("%(asctime)s %(levelname)s %(name)s %(message)s")
-
-logHandler.setFormatter(formatter)
-logger.addHandler(logHandler)
+__all__ = [
+    "FileScanner",
+    "FileInfo",
+    "FileFormat",
+    "ScanResult",
+    "FileChange",
+    "DocumentParser",
+    "ParsedDocument",
+    "DocumentMetadata",
+    "ChunkingService",
+    "TextChunk",
+    "ChunkMetadata",
+    "ChunkingResult",
+    "EmbeddingService",
+    "EmbeddedChunk",
+    "EmbeddingResult",
+    "VectorDatabaseService",
+    "StoredEmbedding",
+    "SearchResult",
+    "VectorDatabaseResult",
+    "SyncManager",
+    "SyncStatus",
+    "FileSyncResult",
+    "SyncOperationResult",
+    "Settings",
+    "settings",
+    "SyncEventHandler",
+    "PipelineOrchestrator",
+    "logger",
+]

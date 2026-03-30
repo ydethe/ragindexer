@@ -1,58 +1,23 @@
-FROM python:3.13-slim
+FROM python:3.12-slim
 
-ARG LOGLEVEL
-ARG QDRANT_URL
-ARG QDRANT_QUERY_LIMIT
-ARG QDRANT_API_KEY
-ARG DOCS_PATH
-ARG EMAILS_PATH
-ARG STATE_DB_PATH
-ARG COLLECTION_NAME
-ARG EMBEDDING_MODEL
-ARG EMBEDDING_MODEL_TRUST_REMOTE_CODE
-ARG MIN_EXPECTED_CHAR
-ARG CHUNK_SIZE
-ARG CHUNK_OVERLAP
-ARG OCR_LANG
-ARG TORCH_NUM_THREADS
-
-ENV LOGLEVEL=$LOGLEVEL
-ENV QDRANT_URL=$QDRANT_URL
-ENV QDRANT_QUERY_LIMIT=$QDRANT_QUERY_LIMIT
-ENV QDRANT_API_KEY=$QDRANT_API_KEY
-ENV OPEN_MODEL_API_KEY=$OPEN_MODEL_API_KEY
-ENV DOCS_PATH=$DOCS_PATH
-ENV EMAILS_PATH=$EMAILS_PATH
-ENV STATE_DB_PATH=$STATE_DB_PATH
-ENV COLLECTION_NAME=$COLLECTION_NAME
-ENV EMBEDDING_MODEL=$EMBEDDING_MODEL
-ENV EMBEDDING_MODEL_TRUST_REMOTE_CODE=$EMBEDDING_MODEL_TRUST_REMOTE_CODE
-ENV MIN_EXPECTED_CHAR=$MIN_EXPECTED_CHAR
-ENV CHUNK_SIZE=$CHUNK_SIZE
-ENV CHUNK_OVERLAP=$CHUNK_OVERLAP
-ENV OCR_LANG=$OCR_LANG
-ENV TORCH_NUM_THREADS=$TORCH_NUM_THREADS
-
-RUN apt update && apt install -y \
-    tesseract-ocr \
-    tesseract-ocr-eng \
-    tesseract-ocr-fra \
-    poppler-utils \
-    libgl1 \
-    fonts-freefont-ttf
+# Install uv
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
 WORKDIR /app
 
-RUN python -m pip install --no-cache-dir -U torch --index-url https://download.pytorch.org/whl/cpu
+# Copy dependency files first for layer caching
+COPY pyproject.toml .
+COPY src/ src/
+COPY README.md .
 
-COPY requirements.txt .
-RUN python -m pip install --no-cache-dir -U -r requirements.txt
+# Install dependencies (no dev/test/doc extras)
+RUN PDM_BUILD_SCM_VERSION=1.0.0 uv sync --no-dev
 
-COPY dist/*.whl .
-RUN python -m pip install --no-cache-dir *.whl && \
-    rm -f *.whl
+# Copy entrypoint
+COPY main.py .
 
-# Expose the port the app will run on
-EXPOSE 7860
+ENV PYTHONUNBUFFERED=1
 
-CMD ["python", "-m" , "ragindexer"]
+VOLUME ["/documents"]
+
+CMD ["uv", "run", "python", "main.py"]

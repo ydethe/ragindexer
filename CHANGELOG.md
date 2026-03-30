@@ -6,12 +6,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- insertion marker -->
-## Unreleased
+## [v1.0.0](https://github.com/ydethe/ragindexer/releases/tag/v1.0.0) - 2026-03-30
 
-<small>[Compare with latest](https://github.com/ydethe/ragindexer/compare/94eb7c1b309263c638f3e92cea40ebdc13d83ac1...HEAD)</small>
+<small>[Compare with first commit](https://github.com/ydethe/ragindexer/compare/94eb7c1b309263c638f3e92cea40ebdc13d83ac1...v1.0.0)</small>
 
 ### Added
 
+- Added Dockerfile and github action ([f135e92](https://github.com/ydethe/ragindexer/commit/f135e9234ebfb48097440166fefc936437de25d8) by Yann de The).
+- Added pytest profiling ([6c6c20f](https://github.com/ydethe/ragindexer/commit/6c6c20f2a71f927998b5cd89c82495a4ba244dd0) by Yann de The).
+- Added precommit hooks ([dbb6aee](https://github.com/ydethe/ragindexer/commit/dbb6aeef0eb081a7d842ccffdbbeb75fd8f3a2f9) by Yann de The).
 - Added QdrantIndexer.get_vector_by_id ([4ce4c35](https://github.com/ydethe/ragindexer/commit/4ce4c35f5fd8dc7251f4df146cc92aeecae74693) by Yann de The).
 - Added publication of qdrant snapshot on github pages ([8c637a3](https://github.com/ydethe/ragindexer/commit/8c637a3d757a238a35840a2a49619879a21e856c) by Yann de The).
 - Added link to doc pages ([080304e](https://github.com/ydethe/ragindexer/commit/080304ec4a90cbc50efd03be87d3ec716991a381) by Yann de The).
@@ -32,6 +35,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
+- Fixed merge ([2ff9d1d](https://github.com/ydethe/ragindexer/commit/2ff9d1d48d8f942dd82f1ca60605a907a6df3cd7) by Yann de The).
+- Fixing tests ([8864d3b](https://github.com/ydethe/ragindexer/commit/8864d3b621bfbf32582b43bca1cbf8f52723f1c3) by Yann de The).
+- Fixed blocking loop ([66834b9](https://github.com/ydethe/ragindexer/commit/66834b9920834b1006a54f788a1f655f865d504b) by BLAUDIN DE THE Yann).
 - Fixed typing info ([2430705](https://github.com/ydethe/ragindexer/commit/24307055d255d1eb80b673a179eebf480e843b78) by Yann de The).
 - Fixed Action ([85cd5bb](https://github.com/ydethe/ragindexer/commit/85cd5bbb0c96c318d57cbac3fd021dec516d339b) by Yann de The).
 - Fixed Exception raised when no text read ([88c078f](https://github.com/ydethe/ragindexer/commit/88c078f4f708ef90ec31a8169858d13bef75bd77) by Yann de The).
@@ -53,4 +59,3 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Removed cuda whl files ([da171ab](https://github.com/ydethe/ragindexer/commit/da171ab5d7d811ff9dde4ccfb4bf06e055efef3a) by Yann de The).
 - Removed openapi key from ingestion image ([a56abcb](https://github.com/ydethe/ragindexer/commit/a56abcb933960ce1a4a4cea974bc23ec51b37607) by Yann de The).
 
-<!-- insertion marker -->

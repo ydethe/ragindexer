@@ -3,8 +3,8 @@ name: Deployment action
 # on: push
 on:
   push:
-    # tags:
-    #   - '**'
+    tags:
+      - '**'
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
@@ -51,7 +51,7 @@ jobs:
         run: uv sync --all-extras --all-groups
 
       - name: Run tests
-        run: uv run pytest
+        run: bash all_tests.sh
         env:
           LOGLEVEL: 'info'
           SCAN_ROOT: ./documents

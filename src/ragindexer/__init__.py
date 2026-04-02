@@ -84,7 +84,6 @@ __all__ = [
     "FileSyncResult",
     "SyncOperationResult",
     "Settings",
-    "settings",
     "SyncEventHandler",
     "PipelineOrchestrator",
     "logger",

@@ -16,7 +16,7 @@ from pydantic import BaseModel, Field
 from qdrant_client import QdrantClient
 from qdrant_client.http.models import Distance, VectorParams, PointStruct
 
-from ragindexer.EmbeddingService import EmbeddedChunk
+from .EmbeddingService import EmbeddedChunk
 
 logger = logging.getLogger(__name__)
 
@@ -131,6 +131,7 @@ class VectorDatabaseService:
         self.api_key = api_key
         self.qdrant_url = qdrant_url
         self.logger = logger_instance or logger
+        self.vector_name = "fast-paraphrase-multilingual-minilm-l12-v2"
 
         # Initialize Qdrant client
         if qdrant_url is not None:
@@ -174,7 +175,12 @@ class VectorDatabaseService:
             self.logger.info(f"Creating collection '{self.collection_name}'")
             self.client.create_collection(
                 collection_name=self.collection_name,
-                vectors_config=VectorParams(size=self.vector_size, distance=Distance.COSINE),
+                vectors_config={
+                    self.vector_name: VectorParams(
+                        size=self.vector_size,
+                        distance=Distance.COSINE,
+                    )
+                },
             )
 
     def add_embeddings(self, embedded_chunks: List[EmbeddedChunk]) -> VectorDatabaseResult:
@@ -224,7 +230,7 @@ class VectorDatabaseService:
                 # Create point
                 point = PointStruct(
                     id=hash(point_id) % (10**10),  # Convert to integer ID
-                    vector=embedded_chunk.embedding,
+                    vector={self.vector_name: embedded_chunk.embedding},
                     payload=payload,
                 )
                 points.append(point)
@@ -296,6 +302,7 @@ class VectorDatabaseService:
             search_results = self.client.query_points(
                 collection_name=self.collection_name,
                 query=query_embedding,
+                using=self.vector_name,
                 limit=limit,
             )
 

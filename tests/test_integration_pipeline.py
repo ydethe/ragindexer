@@ -5,7 +5,6 @@ Integration tests for complete pipeline: FileScanner → DocumentParser → Chun
 Tests verify that all components work seamlessly together.
 """
 
-
 from ragindexer import (
     FileScanner,
     DocumentParser,

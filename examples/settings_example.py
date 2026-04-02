@@ -5,6 +5,7 @@ Example: Using the Settings component
 This example demonstrates various ways to configure ragindexer using the
 Settings component and how to integrate it with other components.
 """
+
 import os
 
 from ragindexer import Settings

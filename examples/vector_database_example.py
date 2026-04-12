@@ -129,7 +129,7 @@ def example_2_semantic_search(vector_db, embedding_service):
         if search_result.success and search_result.results:
             for i, result in enumerate(search_result.results, 1):
                 print(f"    {i}. [{result.score:.3f}] {result.document}")
-                print(f"       {result.chunk_content[:70]}...")
+                print(f"       {result.content[:70]}...")
         else:
             print("    No results found")
 

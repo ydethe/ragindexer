@@ -28,7 +28,7 @@ class StoredEmbedding(BaseModel):
 
     Attributes:
         point_id: Unique ID in the vector database
-        chunk_content: Original text content
+        content: Original text content
         embedding: Vector representation
         document: Source document path
         document_title: Document title if available
@@ -40,7 +40,7 @@ class StoredEmbedding(BaseModel):
     """
 
     point_id: str
-    chunk_content: str
+    content: str
     embedding: List[float]
     document: str
     document_title: Optional[str] = None
@@ -58,14 +58,14 @@ class SearchResult(BaseModel):
 
     Attributes:
         point_id: ID in the vector database
-        chunk_content: Retrieved text content
+        content: Retrieved text content
         score: Similarity score (0-1, higher is more similar)
         document: Source document path
         chunk_index: Index in the document
     """
 
     point_id: str
-    chunk_content: str
+    content: str
     score: float
     document: str
     document_title: Optional[str] = None
@@ -217,7 +217,7 @@ class VectorDatabaseService:
 
                 # Prepare payload (metadata)
                 payload = {
-                    "chunk_content": chunk.content,
+                    "content": chunk.content,
                     "document": metadata.document,
                     "document_title": metadata.document_title,
                     "document_author": metadata.document_author,
@@ -321,7 +321,7 @@ class VectorDatabaseService:
                 if score >= score_threshold:
                     result = SearchResult(
                         point_id=str(hit.id),
-                        chunk_content=hit.payload.get("chunk_content", ""),
+                        content=hit.payload.get("content", ""),
                         score=score,
                         document=hit.payload.get("document", ""),
                         document_title=hit.payload.get("document_title"),

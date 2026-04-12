@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 <!-- insertion marker -->
+## [v1.1.0](https://github.com/ydethe/ragindexer/releases/tag/v1.1.0) - 2026-04-12
+
+<small>[Compare with v1.0.3](https://github.com/ydethe/ragindexer/compare/v1.0.3...v1.1.0)</small>
+
+### Fixed
+
+- Fixed mcp server compatibility ([17ccc02](https://github.com/ydethe/ragindexer/commit/17ccc025f2ca0d33e5aa345ffdb368bf19059094) by Yann de The).
+
 ## [v1.0.3](https://github.com/ydethe/ragindexer/releases/tag/v1.0.3) - 2026-04-02
 
 <small>[Compare with v1.0.2](https://github.com/ydethe/ragindexer/compare/v1.0.2...v1.0.3)</small>

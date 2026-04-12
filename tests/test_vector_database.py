@@ -116,7 +116,7 @@ class TestVectorDatabaseBasic:
         for search_result in result.results:
             # Allow small floating point errors
             assert -0.01 <= search_result.score <= 1.01
-            assert search_result.chunk_content
+            assert search_result.content
             assert search_result.document
 
     def test_search_with_score_threshold(self, vector_db, sample_embedded_chunks):
@@ -395,7 +395,7 @@ class TestVectorDatabaseSearch:
         results = vector_db.search(query_embedding.tolist(), limit=3)
 
         # First result should be about cats
-        assert results.results[0].chunk_content  # Some content returned
+        assert results.results[0].content  # Some content returned
         assert results.success is True
 
     def test_search_limit_respected(self, tmp_path):

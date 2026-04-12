@@ -35,7 +35,7 @@ Représente un embedding stocké dans la base de données.
 ```python
 class StoredEmbedding(BaseModel):
     point_id: str  # ID unique dans la base
-    chunk_content: str  # Texte du chunk
+    content: str  # Texte du chunk
     embedding: List[float]  # Vecteur d'embedding
     document: str  # Chemin du document source
     document_title: Optional[str]  # Titre du document
@@ -53,7 +53,7 @@ Résultat d'une recherche sémantique.
 ```python
 class SearchResult(BaseModel):
     point_id: str  # ID dans la base
-    chunk_content: str  # Texte trouvé
+    content: str  # Texte trouvé
     score: float  # Score de similarité (0-1)
     document: str  # Source du chunk
     document_title: Optional[str]  # Titre du document
@@ -175,7 +175,7 @@ results = vector_db.search(
 # Afficher les résultats
 for result in results.results:
     print(f"Score: {result.score:.3f}")
-    print(f"Content: {result.chunk_content[:100]}...")
+    print(f"Content: {result.content[:100]}...")
     print(f"Source: {result.document}")
     print()
 ```
@@ -302,7 +302,7 @@ search_results = vector_db.search(query_embedding.tolist(), limit=5)
 
 print(f"\nTop results for '{query}':")
 for result in search_results.results:
-    print(f"- [{result.score:.3f}] {result.chunk_content[:80]}...")
+    print(f"- [{result.score:.3f}] {result.content[:80]}...")
 ```
 
 ## Mode In-Memory vs Persistent
@@ -350,7 +350,7 @@ Les métadonnées suivantes sont préservées avec chaque embedding:
 
 ```python
 {
-    "chunk_content": str,  # Texte du chunk
+    "content": str,  # Texte du chunk
     "document": str,  # Document source
     "document_title": Optional[str],  # Titre du document
     "document_author": Optional[str],  # Auteur

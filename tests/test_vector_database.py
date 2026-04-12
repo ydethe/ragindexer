@@ -50,7 +50,7 @@ class TestVectorDatabaseBasic:
 
         for idx, text in enumerate(texts):
             metadata = ChunkMetadata(
-                source_file="test.txt",
+                document="test.txt",
                 document_title="Test Document",
                 document_author="Test Author",
                 chunk_index=idx,
@@ -117,7 +117,7 @@ class TestVectorDatabaseBasic:
             # Allow small floating point errors
             assert -0.01 <= search_result.score <= 1.01
             assert search_result.chunk_content
-            assert search_result.source_file
+            assert search_result.document
 
     def test_search_with_score_threshold(self, vector_db, sample_embedded_chunks):
         """Test search with score threshold."""
@@ -189,7 +189,7 @@ class TestVectorDatabaseMemory:
 
         # Create simple embedded chunk
         metadata = ChunkMetadata(
-            source_file="test.txt",
+            document="test.txt",
             chunk_index=0,
             total_chunks=1,
             start_char=0,
@@ -227,7 +227,7 @@ class TestVectorDatabasePersistence:
 
         # Create and add embedding
         metadata = ChunkMetadata(
-            source_file="test.txt",
+            document="test.txt",
             chunk_index=0,
             total_chunks=1,
             start_char=0,
@@ -282,7 +282,7 @@ class TestVectorDatabaseIntegration:
 
         for idx, text in enumerate(texts):
             metadata = ChunkMetadata(
-                source_file="test.txt",
+                document="test.txt",
                 chunk_index=idx,
                 total_chunks=len(texts),
                 start_char=idx * 50,
@@ -377,7 +377,7 @@ class TestVectorDatabaseSearch:
         chunks = []
         for idx, text in enumerate(texts):
             metadata = ChunkMetadata(
-                source_file="test.txt",
+                document="test.txt",
                 chunk_index=idx,
                 total_chunks=len(texts),
                 start_char=idx * 50,
@@ -406,7 +406,7 @@ class TestVectorDatabaseSearch:
         chunks = []
         for i in range(20):
             metadata = ChunkMetadata(
-                source_file=f"doc{i}.txt",
+                document=f"doc{i}.txt",
                 chunk_index=0,
                 total_chunks=1,
                 start_char=0,
@@ -480,7 +480,7 @@ class TestVectorDatabaseApiKey:
         )
 
         metadata = ChunkMetadata(
-            source_file="test.txt",
+            document="test.txt",
             chunk_index=0,
             total_chunks=1,
             start_char=0,
@@ -507,7 +507,7 @@ class TestVectorDatabaseMetadata:
 
         # Create chunk with metadata
         metadata = ChunkMetadata(
-            source_file="my_document.txt",
+            document="my_document.txt",
             document_title="My Title",
             document_author="My Author",
             chunk_index=5,
@@ -534,6 +534,6 @@ class TestVectorDatabaseMetadata:
 
         assert len(result.results) > 0
         search_result = result.results[0]
-        assert search_result.source_file == "my_document.txt"
+        assert search_result.document == "my_document.txt"
         assert search_result.document_title == "My Title"
         assert search_result.chunk_index == 5

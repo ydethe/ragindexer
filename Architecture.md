@@ -131,7 +131,7 @@ ragindexer est un système d'indexation et de recherche sémantique basé sur de
 - Caching de modèles (class-level) pour éviter rechargement
 - Méthode similarity() pour calcul de similarité cosinus
 - embed_text() pour embeddings de requêtes de recherche
-- Métadonnées complètes préservées (source_file, document_title, chunk_index, etc.)
+- Métadonnées complètes préservées (document, document_title, chunk_index, etc.)
 
 **Modèle par défaut:** `BAAI/bge-small-en-v1.5` (384 dimensions, ~33MB ONNX)
 

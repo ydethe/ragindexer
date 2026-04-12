@@ -19,30 +19,33 @@ Le `DocumentParser` est le composant 2 de ragindexer responsable de l'extraction
 Contient les métadonnées extraites du document:
 ```python
 class DocumentMetadata(BaseModel):
-    title: Optional[str]          # Titre du document
-    author: Optional[str]         # Auteur du document
-    page_count: Optional[int]     # Nombre de pages (PDF/DOCX)
-    source_file: str              # Chemin du fichier source
-    format: FileFormat            # Format du document
-    extraction_time: datetime     # Moment de l'extraction
+    title: Optional[str]  # Titre du document
+    author: Optional[str]  # Auteur du document
+    page_count: Optional[int]  # Nombre de pages (PDF/DOCX)
+    document: str  # Chemin du fichier source
+    format: FileFormat  # Format du document
+    extraction_time: datetime  # Moment de l'extraction
 ```
 
 #### `ParsedDocument`
 Résultat principal de l'analyse:
 ```python
 class ParsedDocument(BaseModel):
-    content: str                  # Texte extrait
-    metadata: DocumentMetadata    # Métadonnées
-    file_info: FileInfo          # Référence FileInfo du scanner
-    character_count: int         # Nombre de caractères extraits
+    content: str  # Texte extrait
+    metadata: DocumentMetadata  # Métadonnées
+    file_info: FileInfo  # Référence FileInfo du scanner
+    character_count: int  # Nombre de caractères extraits
 ```
 
 ### Classe `DocumentParser`
 
 ```python
 class DocumentParser:
-    def __init__(self, logger_instance: Optional[logging.Logger] = None)
-    def parse(self, file_info: FileInfo) -> ParsedDocument
+    def __init__(self, logger_instance: Optional[logging.Logger] = None):
+        ...
+
+    def parse(self, file_info: FileInfo) -> ParsedDocument:
+        ...
 ```
 
 ## Utilisation
@@ -89,9 +92,9 @@ parser = DocumentParser()
 for file_info in result.files.values():
     parsed = parser.parse(file_info)
     # Accès aux métadonnées du scanner
-    print(file_info.file_size)    # Taille en bytes
-    print(file_info.modified_time) # Date de modification
-    print(file_info.file_hash)     # Hash SHA256
+    print(file_info.file_size)  # Taille en bytes
+    print(file_info.modified_time)  # Date de modification
+    print(file_info.file_hash)  # Hash SHA256
 ```
 
 ## Extraction par format

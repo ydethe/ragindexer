@@ -128,7 +128,7 @@ def example_2_semantic_search(vector_db, embedding_service):
 
         if search_result.success and search_result.results:
             for i, result in enumerate(search_result.results, 1):
-                print(f"    {i}. [{result.score:.3f}] {result.source_file}")
+                print(f"    {i}. [{result.score:.3f}] {result.document}")
                 print(f"       {result.chunk_content[:70]}...")
         else:
             print("    No results found")
@@ -177,7 +177,7 @@ def example_4_batch_operations():
 
     for i in range(100):
         metadata = ChunkMetadata(
-            source_file=f"batch_test_{i // 10}.txt",
+            document=f"batch_test_{i // 10}.txt",
             chunk_index=i % 10,
             total_chunks=10,
             start_char=i * 100,

@@ -15,6 +15,7 @@ from pathlib import Path
 from pydantic import BaseModel, Field
 from qdrant_client import QdrantClient
 from qdrant_client.http.models import Distance, VectorParams, PointStruct
+from qdrant_client.conversions import common_types as types
 
 from .EmbeddingService import EmbeddedChunk
 
@@ -29,7 +30,7 @@ class StoredEmbedding(BaseModel):
         point_id: Unique ID in the vector database
         chunk_content: Original text content
         embedding: Vector representation
-        source_file: Source document path
+        document: Source document path
         document_title: Document title if available
         chunk_index: Index of chunk in document
         total_chunks: Total chunks in document
@@ -41,7 +42,7 @@ class StoredEmbedding(BaseModel):
     point_id: str
     chunk_content: str
     embedding: List[float]
-    source_file: str
+    document: str
     document_title: Optional[str] = None
     document_author: Optional[str] = None
     chunk_index: int
@@ -59,14 +60,14 @@ class SearchResult(BaseModel):
         point_id: ID in the vector database
         chunk_content: Retrieved text content
         score: Similarity score (0-1, higher is more similar)
-        source_file: Source document path
+        document: Source document path
         chunk_index: Index in the document
     """
 
     point_id: str
     chunk_content: str
     score: float
-    source_file: str
+    document: str
     document_title: Optional[str] = None
     chunk_index: int
 
@@ -217,7 +218,7 @@ class VectorDatabaseService:
                 # Prepare payload (metadata)
                 payload = {
                     "chunk_content": chunk.content,
-                    "source_file": metadata.source_file,
+                    "document": metadata.document,
                     "document_title": metadata.document_title,
                     "document_author": metadata.document_author,
                     "chunk_index": metadata.chunk_index,
@@ -269,6 +270,7 @@ class VectorDatabaseService:
         query_embedding: List[float],
         limit: int = 5,
         score_threshold: float = 0.0,
+        query_filter: types.Filter | None = None,
     ) -> VectorDatabaseResult:
         """
         Search for similar embeddings in the database.
@@ -277,6 +279,9 @@ class VectorDatabaseService:
             query_embedding: Vector to search for
             limit: Maximum number of results
             score_threshold: Minimum similarity score (0-1)
+            query_filter:
+                - Exclude vectors which doesn't fit given conditions.
+                - If `None` - search among all vectors
 
         Returns:
             VectorDatabaseResult with search results
@@ -285,7 +290,7 @@ class VectorDatabaseService:
             ValueError: If query_embedding dimension doesn't match
             Exception: If search fails
         """
-        if len(query_embedding) != self.vector_size:
+        if hasattr(query_embedding, "__len__") and len(query_embedding) != self.vector_size:
             raise ValueError(
                 f"Query embedding dimension {len(query_embedding)} "
                 f"doesn't match vector size {self.vector_size}"
@@ -303,6 +308,7 @@ class VectorDatabaseService:
                 collection_name=self.collection_name,
                 query=query_embedding,
                 using=self.vector_name,
+                query_filter=query_filter,
                 limit=limit,
             )
 
@@ -317,7 +323,7 @@ class VectorDatabaseService:
                         point_id=str(hit.id),
                         chunk_content=hit.payload.get("chunk_content", ""),
                         score=score,
-                        source_file=hit.payload.get("source_file", ""),
+                        document=hit.payload.get("document", ""),
                         document_title=hit.payload.get("document_title"),
                         chunk_index=hit.payload.get("chunk_index", 0),
                     )
@@ -345,12 +351,12 @@ class VectorDatabaseService:
                 duration_seconds=(datetime.now() - start_time).total_seconds(),
             )
 
-    def delete_document(self, source_file: str) -> VectorDatabaseResult:
+    def delete_document(self, document: str) -> VectorDatabaseResult:
         """
         Delete all embeddings for a specific document.
 
         Args:
-            source_file: Source file path to delete
+            document: Source file path to delete
 
         Returns:
             VectorDatabaseResult with deletion details
@@ -360,7 +366,7 @@ class VectorDatabaseService:
         """
         start_time = datetime.now()
 
-        self.logger.info(f"Deleting embeddings for document: {source_file}")
+        self.logger.info(f"Deleting embeddings for document: {document}")
 
         try:
             # Qdrant 1.17.1: scroll through points and delete those matching
@@ -374,7 +380,7 @@ class VectorDatabaseService:
                 )
 
                 for point in points:
-                    if point.payload.get("source_file") == source_file:
+                    if point.payload.get("document") == document:
                         points_to_delete.append(point.id)
 
             # Delete the identified points
@@ -387,7 +393,7 @@ class VectorDatabaseService:
             end_time = datetime.now()
             duration = (end_time - start_time).total_seconds()
 
-            self.logger.info(f"Deleted {len(points_to_delete)} embeddings for {source_file}")
+            self.logger.info(f"Deleted {len(points_to_delete)} embeddings for {document}")
 
             return VectorDatabaseResult(
                 operation="delete",
@@ -397,7 +403,7 @@ class VectorDatabaseService:
             )
 
         except Exception as e:
-            self.logger.error(f"Failed to delete document {source_file}: {e}")
+            self.logger.error(f"Failed to delete document {document}: {e}")
             return VectorDatabaseResult(
                 operation="delete",
                 success=False,

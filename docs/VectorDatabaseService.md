@@ -34,16 +34,16 @@ Représente un embedding stocké dans la base de données.
 
 ```python
 class StoredEmbedding(BaseModel):
-    point_id: str                    # ID unique dans la base
-    chunk_content: str               # Texte du chunk
-    embedding: List[float]           # Vecteur d'embedding
-    source_file: str                 # Chemin du document source
-    document_title: Optional[str]     # Titre du document
-    chunk_index: int                 # Index du chunk dans le doc
-    total_chunks: int                # Total de chunks du doc
-    start_char: int                  # Position de début
-    end_char: int                    # Position de fin
-    stored_at: datetime              # Timestamp du stockage
+    point_id: str  # ID unique dans la base
+    chunk_content: str  # Texte du chunk
+    embedding: List[float]  # Vecteur d'embedding
+    document: str  # Chemin du document source
+    document_title: Optional[str]  # Titre du document
+    chunk_index: int  # Index du chunk dans le doc
+    total_chunks: int  # Total de chunks du doc
+    start_char: int  # Position de début
+    end_char: int  # Position de fin
+    stored_at: datetime  # Timestamp du stockage
 ```
 
 ### `SearchResult`
@@ -52,12 +52,12 @@ Résultat d'une recherche sémantique.
 
 ```python
 class SearchResult(BaseModel):
-    point_id: str                    # ID dans la base
-    chunk_content: str               # Texte trouvé
-    score: float                     # Score de similarité (0-1)
-    source_file: str                 # Source du chunk
-    document_title: Optional[str]     # Titre du document
-    chunk_index: int                 # Index du chunk
+    point_id: str  # ID dans la base
+    chunk_content: str  # Texte trouvé
+    score: float  # Score de similarité (0-1)
+    document: str  # Source du chunk
+    document_title: Optional[str]  # Titre du document
+    chunk_index: int  # Index du chunk
 ```
 
 ### `VectorDatabaseResult`
@@ -66,13 +66,13 @@ Résultat des opérations sur la base de données.
 
 ```python
 class VectorDatabaseResult(BaseModel):
-    operation: str                   # Type d'opération
-    success: bool                    # Succès de l'opération
-    items_affected: int              # Nombre d'items affectés
-    results: List[SearchResult]      # Résultats de recherche
-    error: Optional[str]             # Message d'erreur si failed
-    duration_seconds: float          # Durée d'exécution
-    timestamp: datetime              # Quand l'opération s'est produite
+    operation: str  # Type d'opération
+    success: bool  # Succès de l'opération
+    items_affected: int  # Nombre d'items affectés
+    results: List[SearchResult]  # Résultats de recherche
+    error: Optional[str]  # Message d'erreur si failed
+    duration_seconds: float  # Durée d'exécution
+    timestamp: datetime  # Quand l'opération s'est produite
 ```
 
 ### `VectorDatabaseService`
@@ -87,7 +87,8 @@ class VectorDatabaseService:
         vector_size: int = 384,
         persistence_path: Optional[Path] = None,
         logger_instance: Optional[logging.Logger] = None,
-    )
+    ):
+        ...
 ```
 
 ## Méthodes principales
@@ -97,9 +98,7 @@ class VectorDatabaseService:
 Ajoute des embeddings à la base de données.
 
 ```python
-def add_embeddings(
-    self, embedded_chunks: List[EmbeddedChunk]
-) -> VectorDatabaseResult:
+def add_embeddings(self, embedded_chunks: List[EmbeddedChunk]) -> VectorDatabaseResult:
     """
     Ajoute des chunks embeddés à la base.
 
@@ -177,7 +176,7 @@ results = vector_db.search(
 for result in results.results:
     print(f"Score: {result.score:.3f}")
     print(f"Content: {result.chunk_content[:100]}...")
-    print(f"Source: {result.source_file}")
+    print(f"Source: {result.document}")
     print()
 ```
 
@@ -186,12 +185,12 @@ for result in results.results:
 Supprime tous les embeddings d'un document.
 
 ```python
-def delete_document(self, source_file: str) -> VectorDatabaseResult:
+def delete_document(self, document: str) -> VectorDatabaseResult:
     """
     Supprime tous les embeddings d'un document.
 
     Args:
-        source_file: Chemin du document à supprimer
+        document: Chemin du document à supprimer
 
     Returns:
         VectorDatabaseResult avec nombre d'items supprimés
@@ -277,9 +276,7 @@ scanner = FileScanner(Path("./documents"))
 parser = DocumentParser()
 chunking_service = ChunkingService(chunk_size=512, overlap_size=50)
 embedding_service = EmbeddingService(model_name="all-MiniLM-L6-v2")
-vector_db = VectorDatabaseService(
-    persistence_path=Path("./data/qdrant")
-)
+vector_db = VectorDatabaseService(persistence_path=Path("./data/qdrant"))
 
 # Indexer les documents
 scan_result = scanner.scan()
@@ -313,9 +310,7 @@ for result in search_results.results:
 ### In-Memory (Développement)
 
 ```python
-vector_db = VectorDatabaseService(
-    persistence_path=None  # Données en RAM uniquement
-)
+vector_db = VectorDatabaseService(persistence_path=None)  # Données en RAM uniquement
 ```
 
 - ✅ Très rapide
@@ -325,9 +320,7 @@ vector_db = VectorDatabaseService(
 ### Persistent (Production)
 
 ```python
-vector_db = VectorDatabaseService(
-    persistence_path=Path("./data/qdrant")
-)
+vector_db = VectorDatabaseService(persistence_path=Path("./data/qdrant"))
 ```
 
 - ✅ Données persistantes
@@ -357,15 +350,15 @@ Les métadonnées suivantes sont préservées avec chaque embedding:
 
 ```python
 {
-    "chunk_content": str,           # Texte du chunk
-    "source_file": str,             # Document source
-    "document_title": Optional[str], # Titre du document
-    "document_author": Optional[str],# Auteur
-    "chunk_index": int,             # Numéro du chunk
-    "total_chunks": int,            # Total dans le document
-    "start_char": int,              # Position dans original
-    "end_char": int,                # Position dans original
-    "stored_at": str,               # Timestamp ISO
+    "chunk_content": str,  # Texte du chunk
+    "document": str,  # Document source
+    "document_title": Optional[str],  # Titre du document
+    "document_author": Optional[str],  # Auteur
+    "chunk_index": int,  # Numéro du chunk
+    "total_chunks": int,  # Total dans le document
+    "start_char": int,  # Position dans original
+    "end_char": int,  # Position dans original
+    "stored_at": str,  # Timestamp ISO
 }
 ```
 

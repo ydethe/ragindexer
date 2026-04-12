@@ -150,7 +150,7 @@ def main():
 
         for doc in parsed_documents:
             if keyword.lower() in doc.content.lower():
-                print(f"  [FOUND] {doc.metadata.source_file}")
+                print(f"  [FOUND] {doc.metadata.document}")
                 # You could count occurrences
                 count = doc.content.lower().count(keyword.lower())
                 print(f"    Occurrences: {count}\n")
@@ -161,7 +161,8 @@ def main():
     print("=" * 70)
     print("STEP 5: Next Steps")
     print("=" * 70)
-    print("""
+    print(
+        """
 The extracted ParsedDocument objects are ready for:
 
 1. Chunking Service
@@ -181,7 +182,8 @@ The extracted ParsedDocument objects are ready for:
    - Orchestrate full pipeline
    - Handle incremental updates
    - Manage document deletions
-""")
+"""
+    )
 
 
 if __name__ == "__main__":

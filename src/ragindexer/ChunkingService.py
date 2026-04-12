@@ -12,7 +12,7 @@ from typing import List, Optional
 from datetime import datetime
 from pydantic import BaseModel, Field
 
-from ragindexer.DocumentParser import ParsedDocument, DocumentMetadata
+from ragindexer.DocumentParser import ParsedDocument
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +22,7 @@ class ChunkMetadata(BaseModel):
     Metadata associated with a text chunk.
 
     Attributes:
-        source_file: Original file path
+        document: Original file path
         document_title: Document title if available
         document_author: Document author if available
         chunk_index: Sequential index of chunk in document
@@ -32,7 +32,7 @@ class ChunkMetadata(BaseModel):
         extracted_at: When the chunk was created
     """
 
-    source_file: str
+    document: str
     document_title: Optional[str] = None
     document_author: Optional[str] = None
     chunk_index: int
@@ -139,12 +139,12 @@ class ChunkingService:
         if not parsed_document.content.strip():
             raise ValueError("Cannot chunk empty document")
 
-        self.logger.info(f"Chunking document: {parsed_document.metadata.source_file}")
+        self.logger.info(f"Chunking document: {parsed_document.metadata.document}")
 
         chunks = self._create_chunks(parsed_document)
 
         result = ChunkingResult(
-            document_path=parsed_document.metadata.source_file,
+            document_path=parsed_document.metadata.document,
             chunks=chunks,
             total_chunks=len(chunks),
             total_characters=sum(c.character_count for c in chunks),
@@ -153,7 +153,7 @@ class ChunkingService:
 
         self.logger.info(
             f"Created {result.total_chunks} chunks from "
-            f"{parsed_document.metadata.source_file} "
+            f"{parsed_document.metadata.document} "
             f"({result.total_tokens} tokens)"
         )
 
@@ -184,7 +184,7 @@ class ChunkingService:
             end_char = current_char_pos + len(chunk_text)
 
             chunk_metadata = ChunkMetadata(
-                source_file=parsed_document.metadata.source_file,
+                document=parsed_document.metadata.document,
                 document_title=parsed_document.metadata.title,
                 document_author=parsed_document.metadata.author,
                 chunk_index=idx,

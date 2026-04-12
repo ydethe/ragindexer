@@ -46,7 +46,7 @@ More content for testing the chunking service.
 
         assert parsed_doc.content
         assert parsed_doc.character_count > 0
-        assert parsed_doc.metadata.source_file == "test.txt"
+        assert parsed_doc.metadata.document == "test.txt"
 
         # Step 3: Chunk
         chunking_service = ChunkingService(chunk_size=100, overlap_size=20)
@@ -63,7 +63,7 @@ More content for testing the chunking service.
             assert chunk.content
             assert chunk.character_count > 0
             assert chunk.token_count > 0
-            assert chunk.metadata.source_file == "test.txt"
+            assert chunk.metadata.document == "test.txt"
 
     def test_full_pipeline_multiple_files(self, tmp_path):
         """Test pipeline with multiple files in subdirectories."""
@@ -164,7 +164,7 @@ And a subsection with more content.
         assert chunking_result.document_path == file_info.relative_path
         for chunk in chunking_result.chunks:
             # Source file should match through the chain
-            assert chunk.metadata.source_file == file_info.relative_path
+            assert chunk.metadata.document == file_info.relative_path
             # File hash should be in metadata indirectly through file_info
             assert chunk.metadata.extracted_at is not None
 
@@ -313,7 +313,7 @@ class TestPipelineDataFlow:
         assert chunking_result.document_path == file_info.relative_path
 
         for chunk in chunking_result.chunks:
-            assert chunk.metadata.source_file == file_info.relative_path
+            assert chunk.metadata.document == file_info.relative_path
 
 
 class TestCompletePipelineWithEmbeddings:
@@ -436,7 +436,7 @@ They have multiple layers for processing.
         for embedded_chunk in embedding_result.embedded_chunks:
             # Original chunk metadata preserved
             chunk_metadata = embedded_chunk.chunk.metadata
-            assert chunk_metadata.source_file == file_info.relative_path
+            assert chunk_metadata.document == file_info.relative_path
             assert (
                 chunk_metadata.document_title is not None or chunk_metadata.document_title is None
             )  # Both valid

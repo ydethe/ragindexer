@@ -16,7 +16,7 @@ from datetime import datetime
 
 from ragindexer import ChunkingService, TextChunk, ChunkMetadata, ChunkingResult
 from ragindexer import DocumentParser, ParsedDocument, DocumentMetadata
-from ragindexer import FileScanner, FileInfo, FileFormat
+from ragindexer import FileInfo, FileFormat
 from pathlib import Path
 
 
@@ -45,7 +45,7 @@ class TestChunkingServiceBasic:
             title="Test Document",
             author="Test Author",
             page_count=None,
-            source_file="test.txt",
+            document="test.txt",
             format=FileFormat.TXT,
         )
 
@@ -110,7 +110,7 @@ Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
             title=None,
             author=None,
             page_count=None,
-            source_file="empty.txt",
+            document="empty.txt",
             format=FileFormat.TXT,
         )
 
@@ -129,7 +129,7 @@ Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
 
         for idx, chunk in enumerate(result.chunks):
             assert isinstance(chunk.metadata, ChunkMetadata)
-            assert chunk.metadata.source_file == "test.txt"
+            assert chunk.metadata.document == "test.txt"
             assert chunk.metadata.document_title == "Test Document"
             assert chunk.metadata.document_author == "Test Author"
             assert chunk.metadata.chunk_index == idx
@@ -160,7 +160,7 @@ class TestChunkingServiceCharacterCount:
             title=None,
             author=None,
             page_count=None,
-            source_file="test.txt",
+            document="test.txt",
             format=FileFormat.TXT,
         )
 
@@ -194,7 +194,7 @@ class TestChunkingServiceCharacterCount:
             title=None,
             author=None,
             page_count=None,
-            source_file="test.txt",
+            document="test.txt",
             format=FileFormat.TXT,
         )
 
@@ -242,7 +242,7 @@ class TestChunkingServiceTokenCounting:
             title=None,
             author=None,
             page_count=None,
-            source_file="test.txt",
+            document="test.txt",
             format=FileFormat.TXT,
         )
 
@@ -279,7 +279,7 @@ class TestChunkingServiceTokenCounting:
             title=None,
             author=None,
             page_count=None,
-            source_file="test.txt",
+            document="test.txt",
             format=FileFormat.TXT,
         )
 
@@ -316,7 +316,7 @@ class TestChunkingServiceSemanticPreservation:
             title=None,
             author=None,
             page_count=None,
-            source_file="test.txt",
+            document="test.txt",
             format=FileFormat.TXT,
         )
 
@@ -361,7 +361,7 @@ Third paragraph is another one."""
             title=None,
             author=None,
             page_count=None,
-            source_file="test.txt",
+            document="test.txt",
             format=FileFormat.TXT,
         )
 
@@ -400,7 +400,7 @@ class TestChunkingServiceOverlap:
             title=None,
             author=None,
             page_count=None,
-            source_file="test.txt",
+            document="test.txt",
             format=FileFormat.TXT,
         )
 
@@ -447,7 +447,7 @@ class TestChunkingServiceStatistics:
             title=None,
             author=None,
             page_count=None,
-            source_file="test.txt",
+            document="test.txt",
             format=FileFormat.TXT,
         )
 
@@ -511,7 +511,7 @@ class TestChunkingServiceIntegration:
 
         # Verify metadata is preserved
         for chunk in result.chunks:
-            assert chunk.metadata.source_file == "test.txt"
+            assert chunk.metadata.document == "test.txt"
             assert chunk.content  # Non-empty content
             assert chunk.character_count > 0
             assert chunk.token_count > 0

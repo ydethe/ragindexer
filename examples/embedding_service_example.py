@@ -175,7 +175,7 @@ def example_5_batch_processing():
     test_chunks = []
     for i in range(10):
         metadata = ChunkMetadata(
-            source_file="test.txt",
+            document="test.txt",
             chunk_index=i,
             total_chunks=10,
             start_char=i * 100,

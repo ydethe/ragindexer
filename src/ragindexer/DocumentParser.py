@@ -6,7 +6,6 @@ Extracts textual content from documents of various formats (PDF, DOCX, TXT, Mark
 Provides parsed text and metadata for further processing.
 """
 
-from pathlib import Path
 from datetime import datetime
 from typing import Optional
 import logging
@@ -28,7 +27,7 @@ class DocumentMetadata(BaseModel):
         title: Document title (if available)
         author: Document author (if available)
         page_count: Number of pages (for PDF/DOCX)
-        source_file: Original file path
+        document: Original file path
         format: Document format (pdf, docx, txt, md)
         extraction_time: When the document was parsed
     """
@@ -36,7 +35,7 @@ class DocumentMetadata(BaseModel):
     title: Optional[str] = None
     author: Optional[str] = None
     page_count: Optional[int] = None
-    source_file: str
+    document: str
     format: FileFormat
     extraction_time: datetime = Field(default_factory=datetime.now)
 
@@ -175,7 +174,7 @@ class DocumentParser:
             title=title,
             author=author,
             page_count=page_count,
-            source_file=str(file_info.relative_path),
+            document=str(file_info.relative_path),
             format=file_info.format,
         )
 
@@ -225,7 +224,7 @@ class DocumentParser:
             title=title,
             author=author,
             page_count=None,  # DOCX doesn't have clear page count
-            source_file=str(file_info.relative_path),
+            document=str(file_info.relative_path),
             format=file_info.format,
         )
 
@@ -259,7 +258,7 @@ class DocumentParser:
             title=None,
             author=None,
             page_count=None,
-            source_file=str(file_info.relative_path),
+            document=str(file_info.relative_path),
             format=file_info.format,
         )
 
@@ -293,7 +292,7 @@ class DocumentParser:
             title=None,
             author=None,
             page_count=None,
-            source_file=str(file_info.relative_path),
+            document=str(file_info.relative_path),
             format=file_info.format,
         )
 

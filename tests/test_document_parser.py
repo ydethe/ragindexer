@@ -17,7 +17,6 @@ from tempfile import TemporaryDirectory
 from ragindexer.DocumentParser import (
     DocumentParser,
     ParsedDocument,
-    DocumentMetadata,
 )
 from ragindexer.FileScanner import FileInfo, FileFormat
 
@@ -110,7 +109,7 @@ class TestDocumentParserTXT:
         assert "test document" in result.content
         assert result.character_count > 0
         assert result.metadata.format == FileFormat.TXT
-        assert result.metadata.source_file == "sample.txt"
+        assert result.metadata.document == "sample.txt"
 
     def test_parse_txt_preserves_content(self, document_parser, sample_txt_file):
         """Test that TXT parsing preserves all content."""
@@ -265,7 +264,7 @@ class TestDocumentParserMetadata:
         result = document_parser.parse(file_info)
 
         assert result.file_info == file_info
-        assert result.metadata.source_file == file_info.relative_path
+        assert result.metadata.document == file_info.relative_path
 
     def test_character_count_calculation(self, document_parser, sample_txt_file):
         """Test character count is correctly calculated."""

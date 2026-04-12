@@ -20,11 +20,14 @@ After extracting text from documents using the `DocumentParser`, text must be sp
 Main service for chunking operations.
 
 ```python
-ChunkingService(
-    chunk_size: int = 512,        # Target chunk size in tokens
-    overlap_size: int = 50,       # Overlap between chunks in tokens
-    logger_instance: Optional[logging.Logger] = None
-)
+class ChunkingService:
+    def __init__(
+        self,
+        chunk_size: int = 512,  # Target chunk size in tokens
+        overlap_size: int = 50,  # Overlap between chunks in tokens
+        logger_instance: Optional[logging.Logger] = None,
+    ):
+        ...
 ```
 
 **Parameters:**
@@ -35,7 +38,8 @@ ChunkingService(
 ### Main Method: `chunk()`
 
 ```python
-def chunk(parsed_document: ParsedDocument) -> ChunkingResult
+def chunk(parsed_document: ParsedDocument) -> ChunkingResult:
+    ...
 ```
 
 Splits a `ParsedDocument` into `TextChunk` objects.
@@ -60,10 +64,10 @@ Represents a single chunk of text ready for embedding.
 
 ```python
 class TextChunk(BaseModel):
-    content: str                      # Actual text content
-    metadata: ChunkMetadata           # Associated metadata
-    character_count: int              # Character count (auto-calculated)
-    token_count: int                  # Token count (auto-calculated)
+    content: str  # Actual text content
+    metadata: ChunkMetadata  # Associated metadata
+    character_count: int  # Character count (auto-calculated)
+    token_count: int  # Token count (auto-calculated)
 ```
 
 ### ChunkMetadata
@@ -72,14 +76,14 @@ Metadata associated with a chunk.
 
 ```python
 class ChunkMetadata(BaseModel):
-    source_file: str                  # Original file path
-    document_title: Optional[str]     # Document title (if available)
-    document_author: Optional[str]    # Document author (if available)
-    chunk_index: int                  # Sequential chunk index
-    total_chunks: int                 # Total chunks in document
-    start_char: int                   # Character position in original text
-    end_char: int                     # Character position in original text
-    extracted_at: datetime            # When chunk was created
+    document: str  # Original file path
+    document_title: Optional[str]  # Document title (if available)
+    document_author: Optional[str]  # Document author (if available)
+    chunk_index: int  # Sequential chunk index
+    total_chunks: int  # Total chunks in document
+    start_char: int  # Character position in original text
+    end_char: int  # Character position in original text
+    extracted_at: datetime  # When chunk was created
 ```
 
 ### ChunkingResult
@@ -88,12 +92,12 @@ Result of chunking a document.
 
 ```python
 class ChunkingResult(BaseModel):
-    document_path: str                # Source document path
-    chunks: List[TextChunk]          # List of created chunks
-    total_chunks: int                 # Total number of chunks
-    total_characters: int             # Total characters processed
-    total_tokens: int                 # Total tokens across all chunks
-    chunking_time: datetime           # When chunking was performed
+    document_path: str  # Source document path
+    chunks: List[TextChunk]  # List of created chunks
+    total_chunks: int  # Total number of chunks
+    total_characters: int  # Total characters processed
+    total_tokens: int  # Total tokens across all chunks
+    chunking_time: datetime  # When chunking was performed
 ```
 
 ## Chunking Strategy
@@ -156,10 +160,7 @@ file_info = scan_result.files["document.txt"]
 parsed_doc = parser.parse(file_info)
 
 # 3. Chunk it
-chunking_service = ChunkingService(
-    chunk_size=512,      # tokens
-    overlap_size=50      # tokens
-)
+chunking_service = ChunkingService(chunk_size=512, overlap_size=50)  # tokens  # tokens
 chunking_result = chunking_service.chunk(parsed_doc)
 
 # 4. Process chunks
@@ -191,8 +192,7 @@ Chunking parameters should be chosen based on:
 **Recommended defaults:**
 ```python
 chunking_service = ChunkingService(
-    chunk_size=512,      # Good balance for most models
-    overlap_size=50      # Provides context continuity
+    chunk_size=512, overlap_size=50  # Good balance for most models  # Provides context continuity
 )
 ```
 
@@ -267,25 +267,31 @@ All errors are logged with context for debugging.
 ### ChunkingService Methods
 
 ```python
-def chunk(parsed_document: ParsedDocument) -> ChunkingResult
+def chunk(parsed_document: ParsedDocument) -> ChunkingResult:
     """Split a parsed document into chunks."""
 
-def _create_chunks(parsed_document: ParsedDocument) -> List[TextChunk]
+
+def _create_chunks(parsed_document: ParsedDocument) -> List[TextChunk]:
     """Internal: Create TextChunk objects with metadata."""
 
-def _split_into_semantic_units(text: str) -> List[str]
+
+def _split_into_semantic_units(text: str) -> List[str]:
     """Internal: Split text into paragraphs, sentences, or words."""
 
-def _split_into_sentences(text: str) -> List[str]
+
+def _split_into_sentences(text: str) -> List[str]:
     """Internal: Split text by sentence boundaries."""
 
-def _split_words_into_chunks(words: List[str]) -> List[str]
+
+def _split_words_into_chunks(words: List[str]) -> List[str]:
     """Internal: Split words into token-sized chunks."""
 
-def _group_into_chunks(semantic_units: List[str]) -> List[str]
+
+def _group_into_chunks(semantic_units: List[str]) -> List[str]:
     """Internal: Group units into chunks with overlap."""
 
-def _count_tokens(text: str) -> int
+
+def _count_tokens(text: str) -> int:
     """Internal: Approximate token count for text."""
 ```
 

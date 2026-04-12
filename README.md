@@ -64,7 +64,7 @@ print(f"Found {scan_result.total_files} documents")
 parser = DocumentParser()
 for file_info in scan_result.files.values():
     parsed_doc = parser.parse(file_info)
-    print(f"{parsed_doc.metadata.source_file}: {parsed_doc.character_count} chars")
+    print(f"{parsed_doc.metadata.document}: {parsed_doc.character_count} chars")
     # Content ready for chunking and embedding
 ```
 

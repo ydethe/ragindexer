@@ -54,7 +54,7 @@ class TestEmbeddingServiceBasic:
 
         for idx, text in enumerate(texts):
             metadata = ChunkMetadata(
-                source_file="test.txt",
+                document="test.txt",
                 document_title="Test Document",
                 document_author="Test Author",
                 chunk_index=idx,
@@ -113,7 +113,7 @@ class TestEmbeddingServiceBasic:
 
         for original_chunk, embedded_chunk in zip(sample_chunks, result.embedded_chunks):
             assert embedded_chunk.chunk == original_chunk
-            assert embedded_chunk.chunk.metadata.source_file == "test.txt"
+            assert embedded_chunk.chunk.metadata.document == "test.txt"
 
     def test_embedding_time_tracked(self, embedding_service, sample_chunks):
         """Test that embedding time is tracked."""
@@ -144,7 +144,7 @@ class TestEmbeddingServiceSingleChunk:
         service = EmbeddingService()
 
         metadata = ChunkMetadata(
-            source_file="test.txt",
+            document="test.txt",
             document_title=None,
             document_author=None,
             chunk_index=0,
@@ -331,7 +331,7 @@ class TestEmbeddingServiceBatching:
         chunks = []
         for i in range(5):
             metadata = ChunkMetadata(
-                source_file="test.txt",
+                document="test.txt",
                 chunk_index=i,
                 total_chunks=5,
                 start_char=i * 20,
@@ -357,7 +357,7 @@ class TestEmbeddingServiceDocumentPath:
         service = EmbeddingService()
 
         metadata = ChunkMetadata(
-            source_file="documents/test.txt",
+            document="documents/test.txt",
             chunk_index=0,
             total_chunks=1,
             start_char=0,
@@ -383,7 +383,7 @@ class TestEmbeddingServiceErrorHandling:
 
         # Empty string
         metadata = ChunkMetadata(
-            source_file="test.txt",
+            document="test.txt",
             chunk_index=0,
             total_chunks=1,
             start_char=0,
@@ -406,7 +406,7 @@ class TestEmbeddingServiceErrorHandling:
         long_text = "This is a test. " * 1000  # Very long text
 
         metadata = ChunkMetadata(
-            source_file="test.txt",
+            document="test.txt",
             chunk_index=0,
             total_chunks=1,
             start_char=0,

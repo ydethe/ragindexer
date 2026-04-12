@@ -155,7 +155,7 @@ class EmbeddingService:
             total_seconds = (end_time - start_time).total_seconds()
 
             # Get document path from first chunk
-            document_path = chunks[0].metadata.source_file if chunks else "unknown"
+            document_path = chunks[0].metadata.document if chunks else "unknown"
 
             result = EmbeddingResult(
                 document_path=document_path,
